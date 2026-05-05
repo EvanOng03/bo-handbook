@@ -2,8 +2,11 @@
 <html lang="zh-Hans" data-theme="light" data-lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>后台菜单手册</title>
+    <title>Admin Menu Manual</title>
     <style>
       :root{
         --bg: #f6f7fb;
@@ -112,15 +115,29 @@
         gap: 8px;
         font-size: 12.5px;
         user-select: none;
-        transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+        transition: background 140ms ease, border-color 140ms ease;
       }
       .btn:hover{
-        transform: translateY(-1px);
         background: rgba(255, 255, 255, 1);
         border-color: rgba(15, 23, 42, 0.18);
       }
-      .btn:active{ transform: translateY(0); }
+      .btn:active{ }
       .btn svg{ width: 16px; height: 16px; opacity: 0.9; }
+      .icon-badge{
+        width: 20px;
+        height: 20px;
+        border-radius: 7px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--mono);
+        font-size: 12px;
+        border: 1px solid var(--border);
+        background: rgba(15, 23, 42, 0.04);
+        color: var(--muted);
+        line-height: 1;
+        flex: 0 0 auto;
+      }
       .search{
         margin-top: 12px;
         border: 1px solid var(--border);
@@ -439,8 +456,10 @@
 
       html[data-theme="dark"]{
         --bg: #0b1020;
-        --panel: rgba(255, 255, 255, 0.06);
-        --border: rgba(255, 255, 255, 0.12);
+        --panel: rgba(255, 255, 255, 0.055);
+        --panel2: rgba(255, 255, 255, 0.040);
+        --panel3: rgba(255, 255, 255, 0.028);
+        --border: rgba(255, 255, 255, 0.10);
         --text: rgba(255, 255, 255, 0.92);
         --muted: rgba(255, 255, 255, 0.72);
         --subtle: rgba(255, 255, 255, 0.58);
@@ -454,29 +473,30 @@
           linear-gradient(180deg, #070a14, #0b1020 55%, #070a14);
       }
       html[data-theme="dark"] .sidebar{
-        background: rgba(11, 16, 32, 0.68);
+        background: linear-gradient(180deg, rgba(11, 16, 32, 0.78), rgba(11, 16, 32, 0.60));
       }
       html[data-theme="dark"] .brand{
         background: linear-gradient(135deg, rgba(124, 92, 255, 0.18), rgba(0, 212, 255, 0.10));
       }
       html[data-theme="dark"] .btn{
-        background: rgba(255, 255, 255, 0.06);
+        background: var(--panel3);
       }
       html[data-theme="dark"] .btn:hover{
-        background: rgba(255, 255, 255, 0.085);
+        background: var(--panel2);
         border-color: rgba(255, 255, 255, 0.18);
       }
       html[data-theme="dark"] .search{
-        background: rgba(255, 255, 255, 0.06);
+        background: var(--panel3);
       }
       html[data-theme="dark"] .nav{
-        background: rgba(255, 255, 255, 0.04);
+        background: var(--panel3);
       }
       html[data-theme="dark"] details.tree{
-        background: rgba(255, 255, 255, 0.04);
+        background: var(--panel3);
+        border-color: var(--border);
       }
       html[data-theme="dark"] details.tree > summary{
-        background: rgba(255, 255, 255, 0.05);
+        background: var(--panel2);
         color: rgba(255, 255, 255, 0.92);
       }
       html[data-theme="dark"] .pill{
@@ -484,16 +504,16 @@
         background: rgba(255, 255, 255, 0.04);
       }
       html[data-theme="dark"] .tree-item{
-        background: transparent;
+        background: var(--panel3);
         color: rgba(255, 255, 255, 0.72);
       }
       html[data-theme="dark"] .tree-item:hover{
-        background: rgba(124, 92, 255, 0.10);
+        background: rgba(124, 92, 255, 0.14);
         border-color: rgba(124, 92, 255, 0.22);
         color: rgba(255, 255, 255, 0.92);
       }
       html[data-theme="dark"] .tree-item[aria-current="true"]{
-        background: rgba(0, 212, 255, 0.12);
+        background: rgba(0, 212, 255, 0.14);
         border-color: rgba(0, 212, 255, 0.28);
         color: rgba(255, 255, 255, 0.92);
       }
@@ -506,23 +526,28 @@
         background:
           radial-gradient(900px 360px at 15% 20%, rgba(124, 92, 255, 0.22), transparent 65%),
           radial-gradient(700px 320px at 85% 10%, rgba(0, 212, 255, 0.18), transparent 64%),
-          rgba(255, 255, 255, 0.04);
+          var(--panel2);
       }
       html[data-theme="dark"] .tag{
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: var(--panel3);
+        border: 1px solid var(--border);
       }
       html[data-theme="dark"] .tag b{
         background: rgba(124, 92, 255, 0.16);
         border: 1px solid rgba(124, 92, 255, 0.25);
       }
       html[data-theme="dark"] .card{
-        background: rgba(255, 255, 255, 0.04);
+        background: var(--panel2);
         box-shadow: 0 12px 40px rgba(0,0,0,0.25);
       }
       html[data-theme="dark"] .callout{
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        background: rgba(255, 255, 255, 0.035);
+        border: 1px solid var(--border);
+        background: var(--panel3);
+      }
+      html[data-theme="dark"] .icon-badge{
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.16);
+        color: rgba(255, 255, 255, 0.82);
       }
       html[data-theme="dark"] mark{
         background: rgba(0, 212, 255, 0.22);
@@ -539,13 +564,11 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M4 6h16M4 12h16M4 18h16" />
           </svg>
-          <span class="cn"></span>菜单</span><span class="en">Menu</span>
+          <span class="cn">菜单</span><span class="en">Menu</span>
         </button>
         <div class="title"><span class="cn">后台菜单手册</span><span class="en">Admin Menu Manual</span></div>
         <button class="btn" id="themeToggleBtnTop" type="button" aria-label="切换主题">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 3a7 7 0 1 0 9 9 9 9 0 0 1-9-9Z" />
-          </svg>
+          <span class="icon-badge" aria-hidden="true">◐</span>
           <span class="cn">主题</span><span class="en">Theme</span>
         </button>
       </div>
@@ -558,7 +581,7 @@
         <div class="brand">
           <div class="logo" aria-hidden="true"></div>
           <div>
-            <h1>后台菜单手册</h1>
+            <h1><span class="cn">后台菜单手册</span><span class="en">Admin Menu Manual</span></h1>
             <p><span class="cn">按“菜单 → 子菜单”层级整理（1 → 1.1）</span><span class="en">Structured as “Menu → Submenu” (e.g., 1 → 1.1)</span></p>
           </div>
         </div>
@@ -577,18 +600,11 @@
             <span class="cn">收起全部</span><span class="en">Collapse</span>
           </button>
           <button class="btn" id="themeToggleBtn" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 3a7 7 0 1 0 9 9 9 9 0 0 1-9-9Z" />
-            </svg>
+            <span class="icon-badge" aria-hidden="true">◐</span>
             <span class="cn">暗色</span><span class="en">Dark</span>
           </button>
           <button class="btn" id="langToggleBtn" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 5h7M7 5v14" />
-              <path d="M12 19h8" />
-              <path d="M12 5h8" />
-              <path d="M12 14h8" />
-            </svg>
+            <span class="icon-badge" aria-hidden="true">Aa</span>
             <span class="cn">双语</span><span class="en">Bilingual</span>
           </button>
         </div>
@@ -598,7 +614,7 @@
             <circle cx="11" cy="11" r="7" />
             <path d="M21 21l-4.3-4.3" />
           </svg>
-          <input id="searchInput" type="search" placeholder="搜索 / Search：Home、Bank、VIP、提款、返水、Banner..." autocomplete="off" />
+          <input id="searchInput" type="search" placeholder="Search: Home, Bank, VIP, Withdraw, Rebate, Banner..." autocomplete="off" />
         </div>
 
         <nav class="nav" id="nav" aria-label="Menu Navigation">
@@ -860,7 +876,7 @@
 
       <main class="content" id="content">
         <header class="hero" id="top">
-          <h2><span class="cn"></span>后台菜单手册</span><span class="en">Admin Menu Manual</span></h2>
+          <h2><span class="cn">后台菜单手册</span><span class="en">Admin Menu Manual</span></h2>
           <p><span class="cn">把你提供的所有菜单做成“编号清晰、用途明确、可搜索”的单页手册。左侧按层级展开（如 2 → 2.1/2.2/...），也可直接搜索关键词。</span><span class="en">A single-page manual for all menus you provided, with clear numbering, purpose, and full-text search. Use the left tree (e.g., 2 → 2.1/2.2/...) or search directly.</span></p>
           <div class="meta">
             <span class="tag"><b><span class="cn">范围</span><span class="en">Scope</span></b> <span class="cn">1–9 全部模块</span><span class="en">Modules 1–9</span></span>
@@ -1422,24 +1438,40 @@
         setTheme(cur === "dark" ? "light" : "dark");
       }
 
+      function applyI18nStaticText(lang){
+        const v = lang || document.documentElement.getAttribute("data-lang") || "both";
+        if (v === "en"){
+          document.title = "Admin Menu Manual";
+          if (searchInput) searchInput.placeholder = "Search: Home, Bank, VIP, Withdraw, Rebate, Banner...";
+        }else if (v === "cn"){
+          document.title = "后台菜单手册";
+          if (searchInput) searchInput.placeholder = "搜索：Home、Bank、VIP、提款、返水、Banner...";
+        }else{
+          document.title = "后台菜单手册 / Admin Menu Manual";
+          if (searchInput) searchInput.placeholder = "Search / 搜索：Home、Bank、VIP、提款、返水、Banner...";
+        }
+      }
+
       function setLang(lang){
         const allowed = new Set(["both", "cn", "en"]);
         const v = allowed.has(lang) ? lang : "both";
         document.documentElement.setAttribute("data-lang", v);
         setStored("manual_lang", v);
-        if (!langToggleBtn) return;
-        const cn = langToggleBtn.querySelector(".cn");
-        const en = langToggleBtn.querySelector(".en");
-        if (v === "cn"){
-          cn.textContent = "中文";
-          en.textContent = "Chinese";
-        }else if (v === "en"){
-          cn.textContent = "英文";
-          en.textContent = "English";
-        }else{
-          cn.textContent = "双语";
-          en.textContent = "Bilingual";
+        if (langToggleBtn){
+          const cn = langToggleBtn.querySelector(".cn");
+          const en = langToggleBtn.querySelector(".en");
+          if (v === "cn"){
+            cn.textContent = "中文";
+            en.textContent = "Chinese";
+          }else if (v === "en"){
+            cn.textContent = "英文";
+            en.textContent = "English";
+          }else{
+            cn.textContent = "双语";
+            en.textContent = "Bilingual";
+          }
         }
+        applyI18nStaticText(v);
       }
 
       function cycleLang(){
@@ -1452,6 +1484,7 @@
       const initialLang = getStored("manual_lang", document.documentElement.getAttribute("data-lang") || "both");
       setTheme(initialTheme);
       setLang(initialLang);
+      applyI18nStaticText(initialLang);
 
       if (themeToggleBtn){ themeToggleBtn.addEventListener("click", toggleTheme); }
       if (themeToggleBtnTop){ themeToggleBtnTop.addEventListener("click", toggleTheme); }
