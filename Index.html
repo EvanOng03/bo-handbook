@@ -1,0 +1,1589 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="light" data-lang="both">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>BO</title>
+    <style>
+      :root{
+        --bg: #f6f7fb;
+        --panel: #ffffff;
+        --border: rgba(15, 23, 42, 0.12);
+        --text: rgba(15, 23, 42, 0.92);
+        --muted: rgba(51, 65, 85, 0.88);
+        --subtle: rgba(71, 85, 105, 0.88);
+        --brand: #2563eb;
+        --brand2: #06b6d4;
+        --ok: #16a34a;
+        --warn: #d97706;
+        --shadow: 0 16px 44px rgba(15, 23, 42, 0.10);
+        --radius: 18px;
+        --radius2: 14px;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body{
+        margin: 0;
+        font-family: var(--sans);
+        color: var(--text);
+        background: radial-gradient(900px 520px at 30% 10%, rgba(37, 99, 235, 0.10), transparent 62%),
+          radial-gradient(900px 520px at 85% 15%, rgba(6, 182, 212, 0.08), transparent 60%),
+          linear-gradient(180deg, #f7f8ff, #f6f7fb 42%, #f5f7fb);
+        overflow-x: hidden;
+      }
+      html[data-lang="cn"] .en{ display: none !important; }
+      html[data-lang="en"] .cn{ display: none !important; }
+      .cn, .en{ display: inline; }
+      .cn + .en{ margin-left: 10px; }
+      p .cn, p .en{ display: block; }
+      .value .cn, .value .en{ display: block; }
+      .label .cn, .label .en{ display: block; }
+      .en{ color: var(--muted); }
+      h3 .cn, h3 .en{ display: inline; }
+      h3 .cn + .en{ margin-left: 10px; }
+      .tree-text .cn, .tree-text .en{ display: block; }
+      .tree-text .en{ font-size: 12px; }
+      details.tree > summary .cn, details.tree > summary .en{ display: block; }
+      details.tree > summary .en{ font-weight: 700; font-size: 12px; color: var(--muted); }
+      a { color: inherit; text-decoration: none; }
+      .app{
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        min-height: 100dvh;
+      }
+      .sidebar{
+        position: sticky;
+        top: 0;
+        height: 100dvh;
+        padding: 18px 14px;
+        border-right: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.84);
+        backdrop-filter: blur(12px);
+      }
+      .brand{
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.10), rgba(6, 182, 212, 0.06));
+        box-shadow: var(--shadow);
+      }
+      .logo{
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
+        background:
+          radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.75), transparent 55%),
+          linear-gradient(135deg, var(--brand), var(--brand2));
+        box-shadow: 0 14px 28px rgba(37, 99, 235, 0.18);
+        flex: 0 0 auto;
+      }
+      .brand h1{
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.2;
+        letter-spacing: 0.2px;
+      }
+      .brand p{
+        margin: 3px 0 0;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .tools{
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .btn{
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.92);
+        color: var(--text);
+        padding: 10px 10px;
+        border-radius: 14px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 12.5px;
+        user-select: none;
+        transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+      }
+      .btn:hover{
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 1);
+        border-color: rgba(15, 23, 42, 0.18);
+      }
+      .btn:active{ transform: translateY(0); }
+      .btn svg{ width: 16px; height: 16px; opacity: 0.9; }
+      .search{
+        margin-top: 12px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.92);
+        border-radius: 16px;
+        padding: 10px 12px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .search svg{ width: 16px; height: 16px; opacity: 0.75; }
+      .search input{
+        width: 100%;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: var(--text);
+        font-size: 13px;
+      }
+      .nav{
+        margin-top: 14px;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.92);
+        overflow: auto;
+        height: calc(100dvh - 18px - 18px - 92px - 12px - 44px - 14px);
+      }
+      details.tree{
+        margin: 10px 0;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: rgba(15, 23, 42, 0.02);
+        overflow: hidden;
+      }
+      details.tree > summary{
+        cursor: pointer;
+        list-style: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 10px;
+        user-select: none;
+        font-weight: 800;
+        font-size: 13px;
+        color: rgba(15, 23, 42, 0.92);
+        background: rgba(255, 255, 255, 0.7);
+      }
+      details.tree > summary::-webkit-details-marker{ display: none; }
+      .pill{
+        font-family: var(--mono);
+        font-size: 11px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        color: var(--muted);
+        background: rgba(15, 23, 42, 0.04);
+      }
+      .tree-items{
+        padding: 6px 8px 10px;
+        display: grid;
+        gap: 6px;
+      }
+      .tree-item{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 10px;
+        border-radius: 12px;
+        border: 1px solid transparent;
+        color: rgba(51, 65, 85, 0.92);
+        background: rgba(255, 255, 255, 0.72);
+        transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+      }
+      .tree-item:hover{
+        background: rgba(37, 99, 235, 0.07);
+        border-color: rgba(37, 99, 235, 0.20);
+        color: rgba(15, 23, 42, 0.92);
+      }
+      .tree-item[aria-current="true"]{
+        background: rgba(6, 182, 212, 0.10);
+        border-color: rgba(6, 182, 212, 0.25);
+        color: rgba(15, 23, 42, 0.92);
+      }
+      .tree-no{
+        font-family: var(--mono);
+        font-size: 12px;
+        color: rgba(71, 85, 105, 0.92);
+        background: rgba(15, 23, 42, 0.04);
+        border: 1px solid rgba(15, 23, 42, 0.10);
+        border-radius: 999px;
+        padding: 3px 8px;
+        min-width: 64px;
+        text-align: center;
+        flex: 0 0 auto;
+      }
+      .tree-text{
+        font-size: 13px;
+        line-height: 1.25;
+      }
+      .nav .empty{
+        display: none;
+        padding: 12px 10px;
+        color: var(--subtle);
+        font-size: 12.5px;
+      }
+      .content{
+        padding: 24px 24px 44px;
+      }
+      .hero{
+        border: 1px solid var(--border);
+        border-radius: 26px;
+        background:
+          radial-gradient(900px 360px at 15% 20%, rgba(37, 99, 235, 0.10), transparent 65%),
+          radial-gradient(700px 320px at 85% 10%, rgba(6, 182, 212, 0.08), transparent 64%),
+          rgba(255, 255, 255, 0.88);
+        box-shadow: var(--shadow);
+        padding: 20px 20px;
+        overflow: hidden;
+        position: relative;
+      }
+      .hero h2{
+        margin: 0;
+        font-size: 22px;
+        letter-spacing: 0.2px;
+      }
+      .hero p{
+        margin: 10px 0 0;
+        color: var(--muted);
+        max-width: 98ch;
+        line-height: 1.6;
+        font-size: 13.5px;
+      }
+      .meta{
+        margin-top: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .tag{
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .tag b{
+        color: var(--text);
+        font-family: var(--mono);
+        font-weight: 700;
+        font-size: 11px;
+        padding: 2px 7px;
+        border-radius: 999px;
+        background: rgba(37, 99, 235, 0.10);
+        border: 1px solid rgba(37, 99, 235, 0.22);
+      }
+      .grid{
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+      }
+      .card{
+        grid-column: span 12;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.92);
+        padding: 16px 16px;
+        box-shadow: 0 12px 40px rgba(15, 23, 42, 0.06);
+      }
+      .card h3{
+        margin: 0;
+        font-size: 16px;
+        letter-spacing: 0.2px;
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .k{
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--subtle);
+        font-weight: 600;
+      }
+      .card p{
+        margin: 10px 0 0;
+        color: var(--muted);
+        line-height: 1.65;
+        font-size: 13.5px;
+      }
+      .callout{
+        margin-top: 12px;
+        border-radius: var(--radius2);
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        background: rgba(15, 23, 42, 0.02);
+        padding: 12px 12px;
+        display: grid;
+        gap: 8px;
+      }
+      .row{
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        gap: 10px;
+        align-items: start;
+      }
+      .row .label{
+        color: var(--subtle);
+        font-size: 12.5px;
+        font-family: var(--mono);
+      }
+      .row .value{
+        color: var(--text);
+        font-size: 13.5px;
+        line-height: 1.6;
+      }
+      .status{
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        background: rgba(15, 23, 42, 0.03);
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 11px;
+      }
+      .dot{
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--brand2);
+        box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.16);
+      }
+      .dot.ok{
+        background: var(--ok);
+        box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.16);
+      }
+      .dot.warn{
+        background: var(--warn);
+        box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.16);
+      }
+      .footer{
+        margin-top: 18px;
+        color: var(--subtle);
+        font-size: 12.5px;
+        padding: 12px 6px;
+      }
+      .mobile-topbar{
+        display: none;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        padding: 12px 14px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+      }
+      .mobile-topbar .row2{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .mobile-topbar .title{
+        font-size: 13px;
+        color: var(--muted);
+      }
+      @media (max-width: 980px){
+        .app{ grid-template-columns: 1fr; }
+        .sidebar{
+          position: fixed;
+          inset: 0 auto 0 0;
+          width: min(380px, 92vw);
+          transform: translateX(-110%);
+          transition: transform 160ms ease;
+          z-index: 30;
+          box-shadow: 30px 0 80px rgba(0,0,0,0.18);
+        }
+        .sidebar.open{ transform: translateX(0); }
+        .content{ padding: 16px 14px 32px; }
+        .mobile-topbar{ display: block; }
+      }
+      @media print{
+        body{ background: #fff; color: #111; }
+        .sidebar, .mobile-topbar, .tools { display: none !important; }
+        .app{ grid-template-columns: 1fr; }
+        .content{ padding: 0; }
+        .hero, .card{
+          box-shadow: none;
+          background: #fff;
+          border-color: #ddd;
+        }
+        a{ color: #111; }
+      }
+      mark{
+        background: rgba(6, 182, 212, 0.18);
+        color: var(--text);
+        padding: 0 3px;
+        border-radius: 6px;
+      }
+      .overlay{
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        z-index: 25;
+      }
+      .overlay.show{ display: block; }
+
+      html[data-theme="dark"]{
+        --bg: #0b1020;
+        --panel: rgba(255, 255, 255, 0.06);
+        --border: rgba(255, 255, 255, 0.12);
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.72);
+        --subtle: rgba(255, 255, 255, 0.58);
+        --shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+      }
+      html[data-theme="dark"] body{
+        background:
+          radial-gradient(1100px 600px at 15% 10%, rgba(124, 92, 255, 0.33), transparent 70%),
+          radial-gradient(900px 520px at 85% 15%, rgba(0, 212, 255, 0.24), transparent 68%),
+          radial-gradient(900px 520px at 75% 85%, rgba(34, 197, 94, 0.14), transparent 60%),
+          linear-gradient(180deg, #070a14, #0b1020 55%, #070a14);
+      }
+      html[data-theme="dark"] .sidebar{
+        background: rgba(11, 16, 32, 0.68);
+      }
+      html[data-theme="dark"] .brand{
+        background: linear-gradient(135deg, rgba(124, 92, 255, 0.18), rgba(0, 212, 255, 0.10));
+      }
+      html[data-theme="dark"] .btn{
+        background: rgba(255, 255, 255, 0.06);
+      }
+      html[data-theme="dark"] .btn:hover{
+        background: rgba(255, 255, 255, 0.085);
+        border-color: rgba(255, 255, 255, 0.18);
+      }
+      html[data-theme="dark"] .search{
+        background: rgba(255, 255, 255, 0.06);
+      }
+      html[data-theme="dark"] .nav{
+        background: rgba(255, 255, 255, 0.04);
+      }
+      html[data-theme="dark"] details.tree{
+        background: rgba(255, 255, 255, 0.04);
+      }
+      html[data-theme="dark"] details.tree > summary{
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.92);
+      }
+      html[data-theme="dark"] .pill{
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      html[data-theme="dark"] .tree-item{
+        background: transparent;
+        color: rgba(255, 255, 255, 0.72);
+      }
+      html[data-theme="dark"] .tree-item:hover{
+        background: rgba(124, 92, 255, 0.10);
+        border-color: rgba(124, 92, 255, 0.22);
+        color: rgba(255, 255, 255, 0.92);
+      }
+      html[data-theme="dark"] .tree-item[aria-current="true"]{
+        background: rgba(0, 212, 255, 0.12);
+        border-color: rgba(0, 212, 255, 0.28);
+        color: rgba(255, 255, 255, 0.92);
+      }
+      html[data-theme="dark"] .tree-no{
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(255, 255, 255, 0.72);
+      }
+      html[data-theme="dark"] .hero{
+        background:
+          radial-gradient(900px 360px at 15% 20%, rgba(124, 92, 255, 0.22), transparent 65%),
+          radial-gradient(700px 320px at 85% 10%, rgba(0, 212, 255, 0.18), transparent 64%),
+          rgba(255, 255, 255, 0.04);
+      }
+      html[data-theme="dark"] .tag{
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+      html[data-theme="dark"] .tag b{
+        background: rgba(124, 92, 255, 0.16);
+        border: 1px solid rgba(124, 92, 255, 0.25);
+      }
+      html[data-theme="dark"] .card{
+        background: rgba(255, 255, 255, 0.04);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+      }
+      html[data-theme="dark"] .callout{
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.035);
+      }
+      html[data-theme="dark"] mark{
+        background: rgba(0, 212, 255, 0.22);
+      }
+      html[data-theme="dark"] .mobile-topbar{
+        background: rgba(7, 10, 20, 0.75);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mobile-topbar">
+      <div class="row2">
+        <button class="btn" id="openMenuBtn" type="button" aria-label="打开菜单">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <span class="cn"></span>菜单</span><span class="en">Menu</span>
+        </button>
+        <div class="title"><span class="cn"></span><span class="en">Admin Menu Manual</span></div>
+        <button class="btn" id="themeToggleBtnTop" type="button" aria-label="切换主题">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3a7 7 0 1 0 9 9 9 9 0 0 1-9-9Z" />
+          </svg>
+          <span class="cn">主题</span><span class="en">Theme</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="app">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1></h1>
+            <p><span class="cn">按“菜单 → 子菜单”层级整理（1 → 1.1）</span><span class="en">Structured as “Menu → Submenu” (e.g., 1 → 1.1)</span></p>
+          </div>
+        </div>
+
+        <div class="tools">
+          <button class="btn" id="expandAllBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            <span class="cn">展开全部</span><span class="en">Expand</span>
+          </button>
+          <button class="btn" id="collapseAllBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14" />
+            </svg>
+            <span class="cn">收起全部</span><span class="en">Collapse</span>
+          </button>
+          <button class="btn" id="themeToggleBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 3a7 7 0 1 0 9 9 9 9 0 0 1-9-9Z" />
+            </svg>
+            <span class="cn">暗色</span><span class="en">Dark</span>
+          </button>
+          <button class="btn" id="langToggleBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 5h7M7 5v14" />
+              <path d="M12 19h8" />
+              <path d="M12 5h8" />
+              <path d="M12 14h8" />
+            </svg>
+            <span class="cn">双语</span><span class="en">Bilingual</span>
+          </button>
+        </div>
+
+        <div class="search" role="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M21 21l-4.3-4.3" />
+          </svg>
+          <input id="searchInput" type="search" placeholder="搜索 / Search：Home、Bank、VIP、提款、返水、Banner..." autocomplete="off" />
+        </div>
+
+        <nav class="nav" id="nav" aria-label="Menu Navigation">
+          <details class="tree" open>
+            <summary><span><span class="cn">1. 首页</span><span class="en">1. HOME</span></span><span class="pill">1</span></summary>
+            <div class="tree-items">
+              <a class="tree-item" href="#m-1-1" data-keywords="1.1 home 大屏 实时 监控 经营 状况 存款 提款 净利润 在线 新增注册" aria-current="false">
+                <span class="tree-no">1.1</span><span class="tree-text"><span class="cn">首页（经营大屏）</span><span class="en">Home</span></span>
+              </a>
+            </div>
+          </details>
+
+          <details class="tree" open>
+            <summary><span><span class="cn">2. 银行</span><span class="en">2. BANK</span></span><span class="pill">7</span></summary>
+            <div class="tree-items">
+              <a class="tree-item" href="#m-2-1" data-keywords="2.1 bank list 本地银行 类型 开关 maybank cimb" aria-current="false">
+                <span class="tree-no">2.1</span><span class="tree-text"><span class="cn">银行列表</span><span class="en">Bank List</span></span>
+              </a>
+              <a class="tree-item" href="#m-2-2" data-keywords="2.2 bank account 收款 银行卡 开户名 账号 限额 local bank" aria-current="false">
+                <span class="tree-no">2.2</span><span class="tree-text"><span class="cn">收款银行卡</span><span class="en">Bank Account</span></span>
+              </a>
+              <a class="tree-item" href="#m-2-3" data-keywords="2.3 bank account door 自动 切换 额度 风控 分流" aria-current="false">
+                <span class="tree-no">2.3</span><span class="tree-text"><span class="cn">收款额度切换</span><span class="en">Bank Account Door</span></span>
+              </a>
+              <a class="tree-item" href="#m-2-4" data-keywords="2.4 member bank list 提款 银行 支持 绑定" aria-current="false">
+                <span class="tree-no">2.4</span><span class="tree-text"><span class="cn">玩家提款银行</span><span class="en">Member Bank List</span></span>
+              </a>
+              <a class="tree-item" href="#m-2-5" data-keywords="2.5 pay bank list payment gateway 三方 通道 银行 配置" aria-current="false">
+                <span class="tree-no">2.5</span><span class="tree-text"><span class="cn">三方通道银行</span><span class="en">Pay Bank List</span></span>
+              </a>
+              <a class="tree-item" href="#m-2-6" data-keywords="2.6 bank phone list 暂未有功能" aria-current="false">
+                <span class="tree-no">2.6</span><span class="tree-text"><span class="cn">银行手机号列表</span><span class="en">Bank Phone List</span></span>
+              </a>
+              <a class="tree-item" href="#m-2-7" data-keywords="2.7 agent bank list 代理 提款 银行 佣金 结算" aria-current="false">
+                <span class="tree-no">2.7</span><span class="tree-text"><span class="cn">代理提款银行</span><span class="en">Agent Bank List</span></span>
+              </a>
+            </div>
+          </details>
+
+          <details class="tree" open>
+            <summary><span><span class="cn">3. 账务/转账</span><span class="en">3. TRANSFER</span></span><span class="pill">8</span></summary>
+            <div class="tree-items">
+              <a class="tree-item" href="#m-3-1" data-keywords="3.1 new transaction 审核 中心 存款 提款 通过 拒绝 payment gateway 自动" aria-current="false">
+                <span class="tree-no">3.1</span><span class="tree-text"><span class="cn">新订单审核</span><span class="en">New Transaction</span></span>
+              </a>
+              <a class="tree-item" href="#m-3-2" data-keywords="3.2 new transaction fast 快捷 订单 处理 简化 审核" aria-current="false">
+                <span class="tree-no">3.2</span><span class="tree-text"><span class="cn">快捷审核</span><span class="en">New Transaction (Fast)</span></span>
+              </a>
+              <a class="tree-item" href="#m-3-3" data-keywords="3.3 transaction history 存款 提款 返水 历史 查询 单号 玩家" aria-current="false">
+                <span class="tree-no">3.3</span><span class="tree-text"><span class="cn">交易历史</span><span class="en">Transaction History</span></span>
+              </a>
+              <a class="tree-item" href="#m-3-4" data-keywords="3.4 transaction report 财务 日报 玩家 维度 存提 频率 vip" aria-current="false">
+                <span class="tree-no">3.4</span><span class="tree-text"><span class="cn">交易报表</span><span class="en">Transaction Report</span></span>
+              </a>
+              <a class="tree-item" href="#m-3-5" data-keywords="3.5 transfer agent wd 代理 提款 审核 佣金" aria-current="false">
+                <span class="tree-no">3.5</span><span class="tree-text"><span class="cn">代理提款审核</span><span class="en">Transfer Agent WD</span></span>
+              </a>
+              <a class="tree-item" href="#m-3-6" data-keywords="3.6 tran agent history 代理 交易 历史 佣金 返水 成本" aria-current="false">
+                <span class="tree-no">3.6</span><span class="tree-text"><span class="cn">代理交易历史</span><span class="en">Tran Agent History</span></span>
+              </a>
+              <a class="tree-item" href="#m-3-7" data-keywords="3.7 pro dp check 暂未有功能" aria-current="false">
+                <span class="tree-no">3.7</span><span class="tree-text"><span class="cn">Pro DP Check（暂无）</span><span class="en">Pro DP Check (N/A)</span></span>
+              </a>
+              <a class="tree-item" href="#m-3-8" data-keywords="3.8 pro dp history 暂未有功能" aria-current="false">
+                <span class="tree-no">3.8</span><span class="tree-text"><span class="cn">Pro DP History（暂无）</span><span class="en">Pro DP History (N/A)</span></span>
+              </a>
+            </div>
+          </details>
+
+          <details class="tree" open>
+            <summary><span><span class="cn">4. 账号</span><span class="en">4. ACCOUNT</span></span><span class="pill">10</span></summary>
+            <div class="tree-items">
+              <a class="tree-item" href="#m-4-1" data-keywords="4.1 agent list 代理 创建 管理 占成 佣金 模式" aria-current="false">
+                <span class="tree-no">4.1</span><span class="tree-text"><span class="cn">代理列表</span><span class="en">Agent List</span></span>
+              </a>
+              <a class="tree-item" href="#m-4-2" data-keywords="4.2 domain set 域名 绑定 代理 专属 多个" aria-current="false">
+                <span class="tree-no">4.2</span><span class="tree-text"><span class="cn">域名设置</span><span class="en">Domain Set</span></span>
+              </a>
+              <a class="tree-item" href="#m-4-3" data-keywords="4.3 subaccount list 子账号 客服 权限" aria-current="false">
+                <span class="tree-no">4.3</span><span class="tree-text"><span class="cn">子账号列表</span><span class="en">SubAccount List</span></span>
+              </a>
+              <a class="tree-item" href="#m-4-4" data-keywords="4.4 manager list 管理员 adjustment cash 加钱 扣钱" aria-current="false">
+                <span class="tree-no">4.4</span><span class="tree-text"><span class="cn">管理员列表</span><span class="en">Manager List</span></span>
+              </a>
+              <a class="tree-item" href="#m-4-5" data-keywords="4.5 comm set 暂未有功能" aria-current="false">
+                <span class="tree-no">4.5</span><span class="tree-text"><span class="cn">Comm Set（暂无）</span><span class="en">Comm Set (N/A)</span></span>
+              </a>
+              <a class="tree-item" href="#m-4-6" data-keywords="4.6 agent info 暂未有功能" aria-current="false">
+                <span class="tree-no">4.6</span><span class="tree-text"><span class="cn">Agent Info（暂无）</span><span class="en">Agent Info (N/A)</span></span>
+              </a>
+              <a class="tree-item" href="#m-4-7" data-keywords="4.7 member list 玩家 信息 余额 注册 ip 所属代理 重置密码 手动加分 turnover winover" aria-current="false">
+                <span class="tree-no">4.7</span><span class="tree-text"><span class="cn">玩家列表</span><span class="en">Member List</span></span>
+              </a>
+              <a class="tree-item" href="#m-4-8" data-keywords="4.8 agent cash 代理 现金流 监控 每日 资金 流水" aria-current="false">
+                <span class="tree-no">4.8</span><span class="tree-text"><span class="cn">代理现金流</span><span class="en">Agent Cash</span></span>
+              </a>
+              <a class="tree-item" href="#m-4-9" data-keywords="4.9 calculate profit 代理 盈亏 结算 计算器 佣金" aria-current="false">
+                <span class="tree-no">4.9</span><span class="tree-text"><span class="cn">计算佣金/利润</span><span class="en">Calculate Profit</span></span>
+              </a>
+              <a class="tree-item" href="#m-4-10" data-keywords="4.10 send profit 佣金 发放 确认 转入 代理 余额" aria-current="false">
+                <span class="tree-no">4.10</span><span class="tree-text"><span class="cn">发放佣金/利润</span><span class="en">Send Profit</span></span>
+              </a>
+            </div>
+          </details>
+
+          <details class="tree" open>
+            <summary><span><span class="cn">5. 报表</span><span class="en">5. REPORT</span></span><span class="pill">12</span></summary>
+            <div class="tree-items">
+              <a class="tree-item" href="#m-5-1" data-keywords="5.1 agent dp wd report 代理 业绩 日报 存提 总额" aria-current="false">
+                <span class="tree-no">5.1</span><span class="tree-text"><span class="cn">代理存提日报</span><span class="en">Agent DP/WD Report</span></span>
+              </a>
+              <a class="tree-item" href="#m-5-2" data-keywords="5.2 w/l report 代理 总盈亏 报表" aria-current="false">
+                <span class="tree-no">5.2</span><span class="tree-text"><span class="cn">代理输赢报表</span><span class="en">W/L Report</span></span>
+              </a>
+              <a class="tree-item" href="#m-5-3" data-keywords="5.3 member w/l 玩家 输赢 分析" aria-current="false">
+                <span class="tree-no">5.3</span><span class="tree-text"><span class="cn">玩家输赢（汇总）</span><span class="en">Member W/L</span></span>
+              </a>
+              <a class="tree-item" href="#m-5-4" data-keywords="5.4 member w/l detail 玩家 具体 游戏 哪一局 输赢" aria-current="false">
+                <span class="tree-no">5.4</span><span class="tree-text"><span class="cn">玩家输赢（明细）</span><span class="en">Member W/L Detail</span></span>
+              </a>
+              <a class="tree-item" href="#m-5-5" data-keywords="5.5 undone member w/l 未结算 注单 监控" aria-current="false">
+                <span class="tree-no">5.5</span><span class="tree-text"><span class="cn">未结算注单</span><span class="en">Undone Member W/L</span></span>
+              </a>
+              <a class="tree-item" href="#m-5-6" data-keywords="5.6 product report 厂商 表现 分析 pp evolution 流水 利润" aria-current="false">
+                <span class="tree-no">5.6</span><span class="tree-text"><span class="cn">厂商报表</span><span class="en">Product Report</span></span>
+              </a>
+              <a class="tree-item" href="#m-5-7" data-keywords="5.7 summary performance 平台 业绩 总结 每日 总报表 收入 支出 净利" aria-current="false">
+                <span class="tree-no">5.7</span><span class="tree-text"><span class="cn">业绩总览</span><span class="en">Summary Performance</span></span>
+              </a>
+              <a class="tree-item" href="#m-5-8" data-keywords="5.8 rebate list 返水 发放 明细 流水 返利" aria-current="false">
+                <span class="tree-no">5.8</span><span class="tree-text"><span class="cn">返水明细</span><span class="en">Rebate List</span></span>
+              </a>
+              <a class="tree-item" href="#m-5-9" data-keywords="5.9 referral list 推荐人 佣金 报表 推荐奖励" aria-current="false">
+                <span class="tree-no">5.9</span><span class="tree-text"><span class="cn">推荐佣金</span><span class="en">Referral List</span></span>
+              </a>
+              <a class="tree-item" href="#m-5-10" data-keywords="5.10 otp report 短信 验证码 发送 记录" aria-current="false">
+                <span class="tree-no">5.10</span><span class="tree-text"><span class="cn">验证码发送记录</span><span class="en">OTP Report</span></span>
+              </a>
+              <a class="tree-item" href="#m-5-11" data-keywords="5.11 promotion report 优惠 活动 转化率 领取 人数 成本" aria-current="false">
+                <span class="tree-no">5.11</span><span class="tree-text"><span class="cn">优惠活动报表</span><span class="en">Promotion Report</span></span>
+              </a>
+              <a class="tree-item" href="#m-5-12" data-keywords="5.12 5.13 5.14 event report tournament freespin 活动 报表" aria-current="false">
+                <span class="tree-no">5.12-5.14</span><span class="tree-text"><span class="cn">活动专项报表</span><span class="en">Event Reports</span></span>
+              </a>
+            </div>
+          </details>
+
+          <details class="tree" open>
+            <summary><span><span class="cn">6. 优惠</span><span class="en">6. PROMOTION</span></span><span class="pill">6</span></summary>
+            <div class="tree-items">
+              <a class="tree-item" href="#m-6-1" data-keywords="6.1 rebate set 返水 比例 三级 member onereff tworeff 公式 投注额" aria-current="false">
+                <span class="tree-no">6.1</span><span class="tree-text"><span class="cn">返水设置</span><span class="en">Rebate Set</span></span>
+              </a>
+              <a class="tree-item" href="#m-6-2" data-keywords="6.2 promotion group 优惠 活动 分类 新人 每日 充值" aria-current="false">
+                <span class="tree-no">6.2</span><span class="tree-text"><span class="cn">优惠分组</span><span class="en">Promotion Group</span></span>
+              </a>
+              <a class="tree-item" href="#m-6-3" data-keywords="6.3 promotion list 优惠 配置 deposit fixed random 流水 倍数" aria-current="false">
+                <span class="tree-no">6.3</span><span class="tree-text"><span class="cn">优惠列表</span><span class="en">Promotion List</span></span>
+              </a>
+              <a class="tree-item" href="#m-6-4" data-keywords="6.4 6.5 6.6 cashback 负盈利 返还 安慰金 洗码 手动" aria-current="false">
+                <span class="tree-no">6.4-6.6</span><span class="tree-text"><span class="cn">负盈利返还</span><span class="en">Cash Back System</span></span>
+              </a>
+              <a class="tree-item" href="#m-6-7" data-keywords="6.7 redpacket 红包 门槛 存款 次数 总额" aria-current="false">
+                <span class="tree-no">6.7</span><span class="tree-text"><span class="cn">红包设置</span><span class="en">RedPacket</span></span>
+              </a>
+              <a class="tree-item" href="#m-6-8" data-keywords="6.8 redpacket 红包 领取 记录" aria-current="false">
+                <span class="tree-no">6.8</span><span class="tree-text"><span class="cn">红包记录</span><span class="en">RedPacket Record</span></span>
+              </a>
+              <a class="tree-item" href="#m-6-9" data-keywords="6.9 reffpt log list 推荐 佣金 流水 历史" aria-current="false">
+                <span class="tree-no">6.9</span><span class="tree-text"><span class="cn">推荐佣金流水</span><span class="en">ReffPT Log List</span></span>
+              </a>
+            </div>
+          </details>
+
+          <details class="tree" open>
+            <summary><span><span class="cn">7. 系统设置</span><span class="en">7. SYSTEM SET</span></span><span class="pill">11</span></summary>
+            <div class="tree-items">
+              <a class="tree-item" href="#m-7-1" data-keywords="7.1 banner list 暂未有功能" aria-current="false">
+                <span class="tree-no">7.1</span><span class="tree-text"><span class="cn">Banner 列表（暂无）</span><span class="en">Banner List (N/A)</span></span>
+              </a>
+              <a class="tree-item" href="#m-7-2" data-keywords="7.2 customer list 在线客服 livechat 链接" aria-current="false">
+                <span class="tree-no">7.2</span><span class="tree-text"><span class="cn">在线客服</span><span class="en">Customer List</span></span>
+              </a>
+              <a class="tree-item" href="#m-7-3" data-keywords="7.3 dp wd set 存提 规则 风控 最低 最高 限额 turnover 三方 开关" aria-current="false">
+                <span class="tree-no">7.3</span><span class="tree-text"><span class="cn">存提设置</span><span class="en">DP/WD Set</span></span>
+              </a>
+              <a class="tree-item" href="#m-7-4" data-keywords="7.4 website set seo 标题 描述 google 排名" aria-current="false">
+                <span class="tree-no">7.4</span><span class="tree-text"><span class="cn">网站设置（SEO）</span><span class="en">Website Set</span></span>
+              </a>
+              <a class="tree-item" href="#m-7-8" data-keywords="7.8 member ip track 多账号 关联 检测 ip" aria-current="false">
+                <span class="tree-no">7.8</span><span class="tree-text"><span class="cn">玩家 IP 追踪</span><span class="en">Member IP Track</span></span>
+              </a>
+              <a class="tree-item" href="#m-7-9" data-keywords="7.9 home image set 外观 定制 上传 banner" aria-current="false">
+                <span class="tree-no">7.9</span><span class="tree-text"><span class="cn">首页图片设置</span><span class="en">Home Image Set</span></span>
+              </a>
+              <a class="tree-item" href="#m-7-10" data-keywords="7.10 home css set 外观 定制 主题 颜色" aria-current="false">
+                <span class="tree-no">7.10</span><span class="tree-text"><span class="cn">首页主题设置</span><span class="en">Home CSS Set</span></span>
+              </a>
+              <a class="tree-item" href="#m-7-13" data-keywords="7.13 link website 合作伙伴 展示" aria-current="false">
+                <span class="tree-no">7.13</span><span class="tree-text"><span class="cn">合作伙伴展示</span><span class="en">Link Website</span></span>
+              </a>
+              <a class="tree-item" href="#m-7-14" data-keywords="7.14 withdraw set 提款 单 自动 路由 三方 代付 auto payout 人工" aria-current="false">
+                <span class="tree-no">7.14</span><span class="tree-text"><span class="cn">提款自动路由</span><span class="en">Withdraw Set</span></span>
+              </a>
+              <a class="tree-item" href="#m-7-16" data-keywords="7.16 q&a set faq 配置" aria-current="false">
+                <span class="tree-no">7.16</span><span class="tree-text"><span class="cn">FAQ 设置</span><span class="en">Q&A Set</span></span>
+              </a>
+              <a class="tree-item" href="#m-7-17" data-keywords="7.17 agent popup 公告 弹窗 配置" aria-current="false">
+                <span class="tree-no">7.17</span><span class="tree-text"><span class="cn">公告弹窗</span><span class="en">Agent PopUp</span></span>
+              </a>
+              <a class="tree-item" href="#m-7-18" data-keywords="7.18 7.19 7.20 7.21 7.22 7.23 7.24 厂商 高级 设置 apollo besoft freespin api 日志" aria-current="false">
+                <span class="tree-no">7.18-7.24</span><span class="tree-text"><span class="cn">厂商高级设置</span><span class="en">Vendor Advanced Settings</span></span>
+              </a>
+              <a class="tree-item" href="#m-7-25" data-keywords="7.25 float set 悬浮窗 前端 浮窗" aria-current="false">
+                <span class="tree-no">7.25</span><span class="tree-text"><span class="cn">悬浮窗设置</span><span class="en">Float Set</span></span>
+              </a>
+            </div>
+          </details>
+
+          <details class="tree" open>
+            <summary><span><span class="cn">8. 产品/游戏</span><span class="en">8. PRODUCT</span></span><span class="pill">4</span></summary>
+            <div class="tree-items">
+              <a class="tree-item" href="#m-8-1" data-keywords="8.1 agent product 厂商 对接 前台 查看" aria-current="false">
+                <span class="tree-no">8.1</span><span class="tree-text"><span class="cn">厂商列表</span><span class="en">Agent Product</span></span>
+              </a>
+              <a class="tree-item" href="#m-8-2" data-keywords="8.2 game list 游戏 排位 优化 顺序 置顶 热门 高毛利" aria-current="false">
+                <span class="tree-no">8.2</span><span class="tree-text"><span class="cn">游戏排位</span><span class="en">Game List</span></span>
+              </a>
+              <a class="tree-item" href="#m-8-3" data-keywords="8.3 new game new 标记 点击率" aria-current="false">
+                <span class="tree-no">8.3</span><span class="tree-text"><span class="cn">New 标记</span><span class="en">NEW Game</span></span>
+              </a>
+              <a class="tree-item" href="#m-8-4" data-keywords="8.4 hot popular game hot popular 标记 点击率" aria-current="false">
+                <span class="tree-no">8.4</span><span class="tree-text"><span class="cn">Hot/Popular 标记</span><span class="en">HOT/Popular Game</span></span>
+              </a>
+            </div>
+          </details>
+
+          <details class="tree" open>
+            <summary><span><span class="cn">9. VIP</span><span class="en">9. VIP</span></span><span class="pill">4</span></summary>
+            <div class="tree-items">
+              <a class="tree-item" href="#m-9-1" data-keywords="9.1 vip config 等级 规则 引擎 门槛 升级 奖励" aria-current="false">
+                <span class="tree-no">9.1</span><span class="tree-text"><span class="cn">VIP 规则配置</span><span class="en">VIP Config</span></span>
+              </a>
+              <a class="tree-item" href="#m-9-2" data-keywords="9.2 vip rebate record 返水 记录 专属" aria-current="false">
+                <span class="tree-no">9.2</span><span class="tree-text"><span class="cn">VIP 返水记录</span><span class="en">VIP Rebate Record</span></span>
+              </a>
+              <a class="tree-item" href="#m-9-3" data-keywords="9.3 vip reward record 晋升 奖励 领取 记录" aria-current="false">
+                <span class="tree-no">9.3</span><span class="tree-text"><span class="cn">VIP 奖励记录</span><span class="en">VIP Reward Record</span></span>
+              </a>
+              <a class="tree-item" href="#m-9-4" data-keywords="9.4 vip job monitor 任务 监控 每日 扫描 晋升 脚本" aria-current="false">
+                <span class="tree-no">9.4</span><span class="tree-text"><span class="cn">VIP 任务监控</span><span class="en">VIP Job Monitor</span></span>
+              </a>
+            </div>
+          </details>
+
+          <div class="empty" id="navEmpty"><span class="cn">没有匹配的菜单，请换个关键词。</span><span class="en">No matches. Try a different keyword.</span></div>
+        </nav>
+      </aside>
+
+      <main class="content" id="content">
+        <header class="hero" id="top">
+          <h2><span class="cn"></span></span><span class="en">Admin Menu Manual</span></h2>
+          <p><span class="cn">把你提供的所有菜单做成“编号清晰、用途明确、可搜索”的单页手册。左侧按层级展开（如 2 → 2.1/2.2/...），也可直接搜索关键词。</span><span class="en">A single-page manual for all menus you provided, with clear numbering, purpose, and full-text search. Use the left tree (e.g., 2 → 2.1/2.2/...) or search directly.</span></p>
+          <div class="meta">
+            <span class="tag"><b><span class="cn">范围</span><span class="en">Scope</span></b> <span class="cn">1–9 全部模块</span><span class="en">Modules 1–9</span></span>
+            <span class="tag"><b><span class="cn">搜索</span><span class="en">Search</span></b> <span class="cn">支持中文/英文/编号</span><span class="en">Chinese / English / Numbers</span></span>
+            <span class="tag"><b><span class="cn">更新</span><span class="en">Updated</span></b> <span id="lastUpdated">2026-05-05</span></span>
+          </div>
+        </header>
+
+        <section class="grid">
+          <article class="card" id="m-1-1" data-title="1.1 Home" data-keywords="1.1 home 大屏 实时 监控 经营 状况 存款 提款 净利润 在线 新增注册">
+            <h3><span class="k">1.1</span> <span class="cn">首页</span><span class="en">Home</span> <span class="k"><span class="cn">（经营实时监控大屏）</span><span class="en">(Real-time operations dashboard)</span></span></h3>
+            <p><span class="cn">用途：平台经营状况的实时监控大屏。</span><span class="en">Purpose: A real-time dashboard to monitor platform operations.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">汇总显示今日总存款、总提款、净利润、在线人数、新增注册人数等核心指标，便于管理者快速判断盈亏与运营趋势。</span><span class="en">Shows key daily KPIs (total deposits/withdrawals, net profit, online users, new registrations, etc.) so managers can quickly assess P&L and trends.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-2-1" data-title="2.1 Bank List" data-keywords="2.1 bank list 本地银行 类型 开关 maybank cimb">
+            <h3><span class="k">2.1</span> <span class="cn">银行列表</span><span class="en">Bank List</span> <span class="k"><span class="cn">（玩家可见本地银行类型）</span><span class="en">(Player-visible local banks)</span></span></h3>
+            <p><span class="cn">用途：设置平台允许玩家使用的本地银行类型。</span><span class="en">Purpose: Enable/disable local bank options available to players.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">在此处开启或关闭特定银行（如 Maybank、CIMB 等）。只有激活的银行，玩家在前端存款时才能看到对应选项。</span><span class="en">Turn on/off specific banks (e.g., Maybank, CIMB). Only enabled banks will appear on the frontend deposit page.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-2-2" data-title="2.2 Bank Account" data-keywords="2.2 bank account 收款 银行卡 开户名 账号 限额 local bank">
+            <h3><span class="k">2.2</span> <span class="cn">收款银行卡</span><span class="en">Bank Account</span> <span class="k"><span class="cn">（公司收款卡配置）</span><span class="en">(Company receiving accounts)</span></span></h3>
+            <p><span class="cn">用途：配置公司用于收款的银行卡详细信息。</span><span class="en">Purpose: Configure the company bank accounts used to receive deposits.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">用于玩家 Local Bank 转账。需填写开户名、账号，以及每笔订单限额。</span><span class="en">Used for Local Bank transfers. Fill in account name/number and per-order limits.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-2-3" data-title="2.3 Bank Account Door" data-keywords="2.3 bank account door 自动 切换 额度 风控 分流">
+            <h3><span class="k">2.3</span> <span class="cn">收款额度切换</span><span class="en">Bank Account Door</span> <span class="k"><span class="cn">（收款额度自动切换）</span><span class="en">(Auto rotation by limit)</span></span></h3>
+            <p><span class="cn">用途：银行卡收款额度自动切换管理。</span><span class="en">Purpose: Automatically rotate receiving cards based on daily limits.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">可设置单张收款卡每日最高收款限额；当收满设定金额，系统自动切换到下一张备用卡，实现收款分流，降低风控风险。</span><span class="en">Set a daily cap per receiving card. When the cap is reached, the system switches to the next standby card to distribute volume and reduce risk.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-2-4" data-title="2.4 Member Bank List" data-keywords="2.4 member bank list 提款 银行 支持 绑定">
+            <h3><span class="k">2.4</span> <span class="cn">玩家提款银行</span><span class="en">Member Bank List</span></h3>
+            <p><span class="cn">用途：维护支持玩家提款的银行。</span><span class="en">Purpose: Maintain which banks players can bind for withdrawals.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">设置系统支持哪些银行作为玩家收款方；若银行不在列表中，玩家无法绑定该银行提款。</span><span class="en">Define which banks are allowed as payout destinations. If a bank is not listed, players cannot bind it for withdrawals.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-2-5" data-title="2.5 Pay Bank List" data-keywords="2.5 pay bank list payment gateway 三方 通道 银行 配置">
+            <h3><span class="k">2.5</span> <span class="cn">三方通道银行</span><span class="en">Pay Bank List</span> <span class="k"><span class="cn">（Payment Gateway）</span><span class="en">(Payment Gateway)</span></span></h3>
+            <p><span class="cn">用途：Payment Gateway 存款渠道配置。</span><span class="en">Purpose: Configure deposit channels for payment gateways.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">对接三方支付平台（如扫码支付、快速网银）的后台开关；可配置每个三方通道支持的银行。</span><span class="en">Manage gateway switches (e.g., QR, fast online banking) and configure which banks each channel supports.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-2-6" data-title="2.6 Bank Phone List" data-keywords="2.6 bank phone list 暂未有功能">
+            <h3><span class="k">2.6</span> <span class="cn">银行手机号列表</span><span class="en">Bank Phone List</span> <span class="k"><span class="cn">（暂无功能）</span><span class="en">(Not available yet)</span></span></h3>
+            <p><span class="status"><span class="dot warn"></span><span class="cn">暂未有功能</span><span class="en">Not available yet</span></span></p>
+          </article>
+
+          <article class="card" id="m-2-7" data-title="2.7 Agent Bank List" data-keywords="2.7 agent bank list 代理 提款 银行 佣金 结算">
+            <h3><span class="k">2.7</span> <span class="cn">代理提款银行</span><span class="en">Agent Bank List</span></h3>
+            <p><span class="cn">用途：配置下线代理提款时可支持的银行。</span><span class="en">Purpose: Configure banks agents can bind for commission withdrawals.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">与 2.4 类似，但专门针对代理层级，用于结算佣金时的银行卡绑定。</span><span class="en">Similar to 2.4, but for agent-level bank binding used in commission settlements.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-3-1" data-title="3.1 New Transaction" data-keywords="3.1 new transaction 审核 中心 存款 提款 通过 拒绝 payment gateway 自动">
+            <h3><span class="k">3.1</span> <span class="cn">新订单审核</span><span class="en">New Transaction</span> <span class="k"><span class="cn">（核心账务审核中心）</span><span class="en">(Core approval center)</span></span></h3>
+            <p><span class="cn">用途：所有存款、提款申请的审核入口。</span><span class="en">Purpose: Central place to review and approve deposits/withdrawals.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">所有存款/提款申请汇集于此。客服核对银行流水后，点击“通过/拒绝”审批存款订单；若使用 Payment Gateway，通常为自动化。</span><span class="en">All deposit/withdrawal requests land here. Staff verify bank statements then approve/reject. With payment gateways, deposits are typically automated.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-3-2" data-title="3.2 New Transaction (Fast)" data-keywords="3.2 new transaction fast 快捷 订单 处理 简化 审核">
+            <h3><span class="k">3.2</span> <span class="cn">快捷审核</span><span class="en">New Transaction (Fast)</span></h3>
+            <p><span class="cn">用途：快捷订单处理通道。</span><span class="en">Purpose: A simplified workflow to speed up processing.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">简化版审核页面，用于提升操作效率。</span><span class="en">A streamlined approval screen designed for faster operations.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-3-3" data-title="3.3 Transaction History" data-keywords="3.3 transaction history 存款 提款 返水 历史 查询 单号 玩家">
+            <h3><span class="k">3.3</span> <span class="cn">交易历史</span><span class="en">Transaction History</span></h3>
+            <p><span class="cn">用途：查询所有玩家存款、提款、返水等订单记录。</span><span class="en">Purpose: Query all completed/rejected/pending orders (deposit, withdrawal, rebate, etc.).</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">支持按时间、单号、玩家名深度查询，是追溯账目问题的主要入口。</span><span class="en">Supports deep search by time, order number, and username—primary place to investigate finance issues.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-3-4" data-title="3.4 Transaction Report" data-keywords="3.4 transaction report 财务 日报 玩家 维度 存提 频率 vip">
+            <h3><span class="k">3.4</span> <span class="cn">交易报表</span><span class="en">Transaction Report</span> <span class="k"><span class="cn">（玩家维度财务日报）</span><span class="en">(Player-level daily finance)</span></span></h3>
+            <p><span class="cn">用途：统计每位玩家每日存提频率及总额。</span><span class="en">Purpose: Daily deposit/withdraw frequency and totals per player.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">用于分析大客户（VIP）的注资习惯及活跃度。</span><span class="en">Useful to analyze VIP funding behavior and activity patterns.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-3-5" data-title="3.5 Transfer Agent WD" data-keywords="3.5 transfer agent wd 代理 提款 审核 佣金">
+            <h3><span class="k">3.5</span> <span class="cn">代理提款审核</span><span class="en">Transfer Agent WD</span></h3>
+            <p><span class="cn">用途：代理提款审核页面。</span><span class="en">Purpose: Review agent commission withdrawal requests.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">独立于玩家提款，专门审核下线代理的佣金提取申请，确保财务分类清晰。</span><span class="en">Separate from player withdrawals; dedicated to agent commission cash-out approvals for clear accounting.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-3-6" data-title="3.6 Tran Agent History" data-keywords="3.6 tran agent history 代理 交易 历史 佣金 返水 成本">
+            <h3><span class="k">3.6</span> <span class="cn">代理交易历史</span><span class="en">Tran Agent History</span></h3>
+            <p><span class="cn">用途：查看代理的存提、佣金发放及返水数据。</span><span class="en">Purpose: View agent transactions, commission payouts, and rebate data.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">方便管理层核对渠道成本与代理相关资金流水。</span><span class="en">Helps management reconcile channel costs and agent cash flow.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-3-7" data-title="3.7 Pro DP Check" data-keywords="3.7 pro dp check 暂未有功能">
+            <h3><span class="k">3.7</span> <span class="cn">Pro DP Check</span><span class="en">Pro DP Check</span> <span class="k"><span class="cn">（暂无功能）</span><span class="en">(Not available yet)</span></span></h3>
+            <p><span class="status"><span class="dot warn"></span><span class="cn">暂未有功能</span><span class="en">Not available yet</span></span></p>
+          </article>
+
+          <article class="card" id="m-3-8" data-title="3.8 Pro DP History" data-keywords="3.8 pro dp history 暂未有功能">
+            <h3><span class="k">3.8</span> <span class="cn">Pro DP History</span><span class="en">Pro DP History</span> <span class="k"><span class="cn">（暂无功能）</span><span class="en">(Not available yet)</span></span></h3>
+            <p><span class="status"><span class="dot warn"></span><span class="cn">暂未有功能</span><span class="en">Not available yet</span></span></p>
+          </article>
+
+          <article class="card" id="m-4-1" data-title="4.1 Agent List" data-keywords="4.1 agent list 代理 创建 管理 占成 佣金 模式">
+            <h3><span class="k">4.1</span> <span class="cn">代理列表</span><span class="en">Agent List</span></h3>
+            <p><span class="cn">用途：下线代理创建与管理。</span><span class="en">Purpose: Create and manage downline agents.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">可手动开通代理账号，并设置占成比例、佣金模式。</span><span class="en">Create agent accounts manually and configure revenue share and commission models.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-4-2" data-title="4.2 Domain Set" data-keywords="4.2 domain set 域名 绑定 代理 专属 多个">
+            <h3><span class="k">4.2</span> <span class="cn">域名设置</span><span class="en">Domain Set</span></h3>
+            <p><span class="cn">用途：代理专属域名绑定。</span><span class="en">Purpose: Bind dedicated domains for agents.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">可设置自己的运营网站，支持多个域名绑定；多个域名但前台内容相同。</span><span class="en">Bind multiple domains for the same frontend site to support agent operations.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-4-3" data-title="4.3 SubAccount List" data-keywords="4.3 subaccount list 子账号 客服 权限">
+            <h3><span class="k">4.3</span> <span class="cn">子账号列表</span><span class="en">SubAccount List</span></h3>
+            <p><span class="cn">用途：内部子账号管理。</span><span class="en">Purpose: Manage internal staff sub-accounts.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">创建客服人员账号，并分配有限的操作权限。</span><span class="en">Create customer service accounts and assign limited permissions.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-4-4" data-title="4.4 Manager List" data-keywords="4.4 manager list 管理员 adjustment cash 加钱 扣钱">
+            <h3><span class="k">4.4</span> <span class="cn">管理员列表</span><span class="en">Manager List</span> <span class="k"><span class="cn">（高权限账号）</span><span class="en">(High-privilege accounts)</span></span></h3>
+            <p><span class="cn">用途：高级管理人员管理。</span><span class="en">Purpose: Manage high-level admin accounts.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">此类账号拥有 Adjustment Cash 权限，可手动给玩家加钱/扣钱（补偿、活动赠送等），需严格控制。</span><span class="en">These accounts can perform Adjustment Cash (manual credit/debit) for compensation or promotions; access must be tightly controlled.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-4-5" data-title="4.5 Comm Set" data-keywords="4.5 comm set 暂未有功能">
+            <h3><span class="k">4.5</span> <span class="cn">Comm Set</span><span class="en">Comm Set</span> <span class="k"><span class="cn">（暂无功能）</span><span class="en">(Not available yet)</span></span></h3>
+            <p><span class="status"><span class="dot warn"></span><span class="cn">暂未有功能</span><span class="en">Not available yet</span></span></p>
+          </article>
+
+          <article class="card" id="m-4-6" data-title="4.6 Agent Info" data-keywords="4.6 agent info 暂未有功能">
+            <h3><span class="k">4.6</span> <span class="cn">Agent Info</span><span class="en">Agent Info</span> <span class="k"><span class="cn">（暂无功能）</span><span class="en">(Not available yet)</span></span></h3>
+            <p><span class="status"><span class="dot warn"></span><span class="cn">暂未有功能</span><span class="en">Not available yet</span></span></p>
+          </article>
+
+          <article class="card" id="m-4-7" data-title="4.7 Member List" data-keywords="4.7 member list 玩家 信息 余额 注册 ip 所属代理 重置密码 手动加分 turnover winover">
+            <h3><span class="k">4.7</span> <span class="cn">玩家列表</span><span class="en">Member List</span></h3>
+            <p><span class="cn">用途：全量玩家信息库。</span><span class="en">Purpose: Master database of all players.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">可查看玩家余额、注册 IP、所属代理；支持重置密码、手动加分、手动设置 Turnover/Winover 等操作。</span><span class="en">View balance, registration IP, agent linkage; supports password reset, manual credit, and Turnover/Winover settings.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-4-8" data-title="4.8 Agent Cash" data-keywords="4.8 agent cash 代理 现金流 监控 每日 资金 流水">
+            <h3><span class="k">4.8</span> <span class="cn">代理现金流</span><span class="en">Agent Cash</span></h3>
+            <p><span class="cn">用途：代理现金流监控。</span><span class="en">Purpose: Monitor agents’ cash flow.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">查看代理旗下每日资金流水波动，帮助判断代理业务规模。</span><span class="en">Track daily fluctuations to estimate agent business scale and health.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-4-9" data-title="4.9 Calculate Profit" data-keywords="4.9 calculate profit 代理 盈亏 结算 计算器 佣金">
+            <h3><span class="k">4.9</span> <span class="cn">计算佣金/利润</span><span class="en">Calculate Profit</span></h3>
+            <p><span class="cn">用途：代理盈亏结算计算器。</span><span class="en">Purpose: Calculate agent profit/commission for a period.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">系统根据设定比例，自动计算代理在特定周期内应得的佣金数额。</span><span class="en">Automatically computes the commission amount based on configured ratios and the selected period.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-4-10" data-title="4.10 Send Profit" data-keywords="4.10 send profit 佣金 发放 确认 转入 代理 余额">
+            <h3><span class="k">4.10</span> <span class="cn">发放佣金/利润</span><span class="en">Send Profit</span></h3>
+            <p><span class="cn">用途：佣金发放确认。</span><span class="en">Purpose: Confirm and execute commission payouts.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">管理员核对 4.9 计算结果无误后，在此处执行发放，佣金将转入代理余额。</span><span class="en">After confirming results from 4.9, execute payout here; the commission will be credited to the agent balance.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-5-1" data-title="5.1 Agent DP/WD Report" data-keywords="5.1 agent dp wd report 代理 业绩 日报 存提 总额">
+            <h3><span class="k">5.1</span> <span class="cn">代理存提日报</span><span class="en">Agent DP/WD Report</span></h3>
+            <p><span class="cn">用途：代理业绩日报。</span><span class="en">Purpose: Daily agent performance report.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">统计代理名下所有玩家的每日存提总额，是评估代理贡献度的直接依据。</span><span class="en">Aggregates daily deposits/withdrawals for all players under each agent to measure agent contribution.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-5-2" data-title="5.2 W/L Report" data-keywords="5.2 w/l report 代理 总盈亏 报表">
+            <h3><span class="k">5.2</span> <span class="cn">代理输赢报表</span><span class="en">W/L Report</span></h3>
+            <p><span class="cn">用途：代理总盈亏报表。</span><span class="en">Purpose: Agent overall win/loss report.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">从全局视角看代理整体输赢情况，判断该渠道是盈利还是亏损。</span><span class="en">Shows overall agent win/loss to determine whether a channel is profitable or losing.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-5-3" data-title="5.3 Member W/L" data-keywords="5.3 member w/l 玩家 输赢 分析">
+            <h3><span class="k">5.3</span> <span class="cn">玩家输赢（汇总）</span><span class="en">Member W/L</span></h3>
+            <p><span class="cn">用途：玩家输赢穿透分析。</span><span class="en">Purpose: Player win/loss analysis (summary).</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">W/L 显示大数汇总，用于快速判断玩家输赢。</span><span class="en">Provides high-level totals to quickly understand player win/loss.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-5-4" data-title="5.4 Member W/L Detail" data-keywords="5.4 member w/l detail 玩家 具体 游戏 哪一局 输赢">
+            <h3><span class="k">5.4</span> <span class="cn">玩家输赢（明细）</span><span class="en">Member W/L Detail</span></h3>
+            <p><span class="cn">用途：玩家输赢穿透分析（明细）。</span><span class="en">Purpose: Player win/loss drill-down (details).</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">可查看到具体玩家在哪个游戏、哪一局输赢了多少钱。</span><span class="en">Shows the exact game/round and amount for each player’s win/loss.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-5-5" data-title="5.5 Undone Member W/L" data-keywords="5.5 undone member w/l 未结算 注单 监控">
+            <h3><span class="k">5.5</span> <span class="cn">未结算注单</span><span class="en">Undone Member W/L</span></h3>
+            <p><span class="cn">用途：未结算注单监控。</span><span class="en">Purpose: Monitor unsettled bets/orders.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">查看玩家已下注但尚未开奖的订单（常用于体育或特定彩票）。</span><span class="en">Lists bets placed but not yet settled (common for sports or certain lottery products).</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-5-6" data-title="5.6 Product Report" data-keywords="5.6 product report 厂商 表现 分析 pp evolution 流水 利润">
+            <h3><span class="k">5.6</span> <span class="cn">厂商报表</span><span class="en">Product Report</span></h3>
+            <p><span class="cn">用途：厂商表现分析。</span><span class="en">Purpose: Analyze provider performance.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">统计如 PP、Evolution 等不同厂商带来的流水和利润，用于决定推广重心。</span><span class="en">Compares turnover and profit by provider (e.g., PP, Evolution) to guide promotion focus.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-5-7" data-title="5.7 Summary Performance" data-keywords="5.7 summary performance 平台 业绩 总结 每日 总报表 收入 支出 净利">
+            <h3><span class="k">5.7</span> <span class="cn">业绩总览</span><span class="en">Summary Performance</span></h3>
+            <p><span class="cn">用途：平台整体业绩总结。</span><span class="en">Purpose: Platform-wide daily summary.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">管理员视角下的每日总报表，包含所有收入、支出和净利对比。</span><span class="en">Daily manager summary including income, expenses, and net profit comparisons.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-5-8" data-title="5.8 Rebate List" data-keywords="5.8 rebate list 返水 发放 明细 流水 返利">
+            <h3><span class="k">5.8</span> <span class="cn">返水明细</span><span class="en">Rebate List</span></h3>
+            <p><span class="cn">用途：返水发放明细。</span><span class="en">Purpose: Rebate payout details.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">记录每位玩家获得的流水返利详情，确保每一分返水都有据可查。</span><span class="en">Tracks each player’s turnover rebate details for auditing and troubleshooting.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-5-9" data-title="5.9 Referral List" data-keywords="5.9 referral list 推荐人 佣金 报表 推荐奖励">
+            <h3><span class="k">5.9</span> <span class="cn">推荐佣金</span><span class="en">Referral List</span></h3>
+            <p><span class="cn">用途：推荐人佣金报表。</span><span class="en">Purpose: Referral commission report.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">查看通过“玩家推荐玩家”模式产生的推荐奖励发放情况。</span><span class="en">Shows payouts generated by player-to-player referral rewards.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-5-10" data-title="5.10 OTP Report" data-keywords="5.10 otp report 短信 验证码 发送 记录">
+            <h3><span class="k">5.10</span> <span class="cn">验证码发送记录</span><span class="en">OTP Report</span></h3>
+            <p><span class="cn">用途：短信验证码发送记录。</span><span class="en">Purpose: OTP SMS sending logs.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">记录玩家请求 OTP 的频率和手机号，用于排查收不到验证码或恶意刷短信的问题。</span><span class="en">Tracks OTP requests by phone number and frequency to investigate delivery issues or abuse.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-5-11" data-title="5.11 Promotion Report" data-keywords="5.11 promotion report 优惠 活动 转化率 领取 人数 成本">
+            <h3><span class="k">5.11</span> <span class="cn">优惠活动报表</span><span class="en">Promotion Report</span></h3>
+            <p><span class="cn">用途：优惠活动转化率。</span><span class="en">Purpose: Promotion performance and conversion.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">统计各项促销活动领取人数及消耗成本，评估活动效果。</span><span class="en">Counts participants and cost consumption per promotion to evaluate effectiveness.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-5-12" data-title="5.12-5.14 Event Reports" data-keywords="5.12 5.13 5.14 event report tournament freespin 活动 报表">
+            <h3><span class="k">5.12 - 5.14</span> <span class="cn">活动专项报表</span><span class="en">Event Reports</span></h3>
+            <p><span class="cn">用途：专项活动数据监控。</span><span class="en">Purpose: Special event monitoring.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">统计 FreeSpin（免费旋转）或 Tournament（锦标赛）等特殊活动的详细数据和玩家表现。</span><span class="en">Provides detailed metrics and player performance for events like FreeSpin or Tournament.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-6-1" data-title="6.1 Rebate Set" data-keywords="6.1 rebate set 返水 比例 三级 member onereff tworeff 公式 投注额">
+            <h3><span class="k">6.1</span> <span class="cn">返水设置</span><span class="en">Rebate Set</span></h3>
+            <p><span class="cn">用途：返水比例核心设置。</span><span class="en">Purpose: Configure rebate percentage rules.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">设置三级返水逻辑：Member 为个人返利；OneReff 为直属上线抽成；TwoReff 为上上线抽成。公式：投注额 × %。</span><span class="en">Configure 3-level rebate: Member (player), OneReff (direct upline), TwoReff (second upline). Formula: turnover × %.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-6-2" data-title="6.2 Promotion Group" data-keywords="6.2 promotion group 优惠 活动 分类 新人 每日 充值">
+            <h3><span class="k">6.2</span> <span class="cn">优惠分组</span><span class="en">Promotion Group</span></h3>
+            <p><span class="cn">用途：优惠活动分类管理。</span><span class="en">Purpose: Categorize promotions for management and frontend display.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">将优惠划分为“新人特惠”“每日充值”等组别，方便前端展示。</span><span class="en">Group promotions such as “Newcomer”, “Daily Top-up”, etc., for better organization and UI display.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-6-3" data-title="6.3 Promotion List" data-keywords="6.3 promotion list 优惠 配置 deposit fixed random 流水 倍数">
+            <h3><span class="k">6.3</span> <span class="cn">优惠列表</span><span class="en">Promotion List</span></h3>
+            <p><span class="cn">用途：优惠活动详细配置。</span><span class="en">Purpose: Configure detailed promotion rules.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">支持存款比例送（Deposit %）、固定金额（Fixed）、随机金额（Random）等模式；可设置流水倍数要求。</span><span class="en">Supports Deposit %, Fixed, and Random rewards, with turnover multiplier requirements.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-6-4" data-title="6.4-6.6 Cash Back System" data-keywords="6.4 6.5 6.6 cashback 负盈利 返还 安慰金 洗码 手动">
+            <h3><span class="k">6.4 - 6.6</span> <span class="cn">负盈利返还</span><span class="en">Cash Back System</span> <span class="k"><span class="cn">（安慰金/洗码）</span><span class="en">(Loss cashback)</span></span></h3>
+            <p><span class="cn">用途：玩家安慰金/洗码系统。</span><span class="en">Purpose: Manual cashback for negative profit (player losses).</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">针对玩家在游戏中的损失（负盈利），按比例进行手动返还。</span><span class="en">Return a percentage based on player losses (negative profit), typically processed manually.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-6-7" data-title="6.7 RedPacket" data-keywords="6.7 redpacket 红包 门槛 存款 次数 总额">
+            <h3><span class="k">6.7</span> <span class="cn">红包设置</span><span class="en">RedPacket</span></h3>
+            <p><span class="cn">用途：互动营销工具。</span><span class="en">Purpose: Interactive marketing tool.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">设置红包门槛（如存款次数满 X 次或总额满 Y 元），系统自动或手动记录玩家领取情况。</span><span class="en">Set eligibility thresholds (e.g., deposit count X or total amount Y). The system records claims automatically or manually.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-6-8" data-title="6.8 RedPacket Record" data-keywords="6.8 redpacket 红包 领取 记录">
+            <h3><span class="k">6.8</span> <span class="cn">红包记录</span><span class="en">RedPacket Record</span></h3>
+            <p><span class="cn">用途：查询红包领取情况。</span><span class="en">Purpose: Check red packet claim records.</span></p>
+          </article>
+
+          <article class="card" id="m-6-9" data-title="6.9 ReffPT Log List" data-keywords="6.9 reffpt log list 推荐 佣金 流水 历史">
+            <h3><span class="k">6.9</span> <span class="cn">推荐佣金流水</span><span class="en">ReffPT Log List</span></h3>
+            <p><span class="cn">用途：推荐佣金流水记录。</span><span class="en">Purpose: Referral commission transaction logs.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">记录玩家因推荐他人而获得的每一笔佣金历史。</span><span class="en">Records each commission earned through referrals.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-7-1" data-title="7.1 Banner List" data-keywords="7.1 banner list 暂未有功能">
+            <h3><span class="k">7.1</span> <span class="cn">Banner 列表</span><span class="en">Banner List</span> <span class="k"><span class="cn">（暂无功能）</span><span class="en">(Not available yet)</span></span></h3>
+            <p><span class="status"><span class="dot warn"></span><span class="cn">暂未有功能</span><span class="en">Not available yet</span></span></p>
+          </article>
+
+          <article class="card" id="m-7-2" data-title="7.2 Customer List" data-keywords="7.2 customer list 在线客服 livechat 链接">
+            <h3><span class="k">7.2</span> <span class="cn">在线客服</span><span class="en">Customer List</span></h3>
+            <p><span class="cn">用途：在线客服对接。</span><span class="en">Purpose: Configure online customer support integration.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">配置前端显示的 LiveChat 或其他三方客服链接。</span><span class="en">Set the LiveChat or third-party support link shown on the frontend.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-7-3" data-title="7.3 DP/WD Set" data-keywords="7.3 dp wd set 存提 规则 风控 最低 最高 限额 turnover 三方 开关">
+            <h3><span class="k">7.3</span> <span class="cn">存提设置</span><span class="en">DP/WD Set</span> <span class="k"><span class="cn">（存提款规则风控）</span><span class="en">(Deposit/withdraw risk rules)</span></span></h3>
+            <p><span class="cn">用途：存提款规则风控。</span><span class="en">Purpose: Manage site-wide deposit/withdraw limits and risk controls.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">设置全站最低/最高存提限额、提款流水倍数（Turnover）以及三方通道开关。</span><span class="en">Configure min/max deposit & withdrawal limits, withdrawal turnover requirement, and gateway switches.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-7-4" data-title="7.4 Website Set" data-keywords="7.4 website set seo 标题 描述 google 排名">
+            <h3><span class="k">7.4</span> <span class="cn">网站设置（SEO）</span><span class="en">Website Set</span></h3>
+            <p><span class="cn">用途：SEO 优化配置。</span><span class="en">Purpose: SEO configuration.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">修改网站标题、描述词等，提升在 Google 搜索中的排名。</span><span class="en">Edit title/description metadata to improve Google search ranking.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-7-8" data-title="7.8 Member IP Track" data-keywords="7.8 member ip track 多账号 关联 检测 ip">
+            <h3><span class="k">7.8</span> <span class="cn">玩家 IP 追踪</span><span class="en">Member IP Track</span></h3>
+            <p><span class="cn">用途：多账号关联检测。</span><span class="en">Purpose: Detect potential multi-account linkage.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">手动查看受怀疑玩家的 IP。</span><span class="en">Manually inspect suspicious players’ IPs.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-7-9" data-title="7.9 Home Image Set" data-keywords="7.9 home image set 外观 定制 上传 banner">
+            <h3><span class="k">7.9</span> <span class="cn">首页图片设置</span><span class="en">Home Image Set</span></h3>
+            <p><span class="cn">用途：网站外观定制（图片）。</span><span class="en">Purpose: UI customization (images).</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">无需代码，上传图片即可更换 Banner 等资源。</span><span class="en">No coding needed—upload images to replace banners and other assets.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-7-10" data-title="7.10 Home Css Set" data-keywords="7.10 home css set 外观 定制 主题 颜色">
+            <h3><span class="k">7.10</span> <span class="cn">首页主题设置</span><span class="en">Home CSS Set</span></h3>
+            <p><span class="cn">用途：网站外观定制（主题颜色）。</span><span class="en">Purpose: UI customization (theme colors).</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">无需代码，调整全站主题颜色等样式参数。</span><span class="en">Adjust global theme colors and style parameters without code.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-7-13" data-title="7.13 Link Website" data-keywords="7.13 link website 合作伙伴 展示">
+            <h3><span class="k">7.13</span> <span class="cn">合作伙伴展示</span><span class="en">Link Website</span></h3>
+            <p><span class="cn">用途：合作伙伴展示入口。</span><span class="en">Purpose: Partner showcase links.</span></p>
+          </article>
+
+          <article class="card" id="m-7-14" data-title="7.14 Withdraw Set" data-keywords="7.14 withdraw set 提款 单 自动 路由 三方 代付 auto payout 人工">
+            <h3><span class="k">7.14</span> <span class="cn">提款自动路由</span><span class="en">Withdraw Set</span></h3>
+            <p><span class="cn">用途：提款单自动路由。</span><span class="en">Purpose: Route withdrawal orders automatically.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">设置提款订单是直接走三方代付（Auto Payout）还是保留在后台人工处理。</span><span class="en">Choose whether withdrawals go through auto payout via a provider or remain for manual processing.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-7-16" data-title="7.16 Q&A Set" data-keywords="7.16 q&a set faq 配置">
+            <h3><span class="k">7.16</span> <span class="cn">FAQ 设置</span><span class="en">Q&A Set</span></h3>
+            <p><span class="cn">用途：配置前端 FAQ。</span><span class="en">Purpose: Configure frontend FAQs.</span></p>
+          </article>
+
+          <article class="card" id="m-7-17" data-title="7.17 Agent PopUp" data-keywords="7.17 agent popup 公告 弹窗 配置">
+            <h3><span class="k">7.17</span> <span class="cn">公告弹窗</span><span class="en">Agent PopUp</span></h3>
+            <p><span class="cn">用途：前端公告弹窗配置。</span><span class="en">Purpose: Configure frontend announcement pop-ups.</span></p>
+          </article>
+
+          <article class="card" id="m-7-18" data-title="7.18-7.24 Vendor Advanced Settings" data-keywords="7.18 7.19 7.20 7.21 7.22 7.23 7.24 厂商 高级 设置 apollo besoft freespin api 日志">
+            <h3><span class="k">7.18 - 7.24</span> <span class="cn">厂商高级设置</span><span class="en">Vendor Advanced Settings</span> <span class="k"><span class="cn">（Apollo / Besoft）</span><span class="en">(Apollo / Besoft)</span></span></h3>
+            <p><span class="cn">用途：深度对接厂商的特色功能。</span><span class="en">Purpose: Advanced vendor integrations and tools.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">配置 FreeSpin 发放与 API 日志查询等高级功能。</span><span class="en">Configure FreeSpin issuance and query API logs, among other advanced features.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-7-25" data-title="7.25 Float Set" data-keywords="7.25 float set 悬浮窗 前端 浮窗">
+            <h3><span class="k">7.25</span> <span class="cn">悬浮窗设置</span><span class="en">Float Set</span></h3>
+            <p><span class="cn">用途：前端悬浮窗设置。</span><span class="en">Purpose: Configure frontend floating widgets/windows.</span></p>
+          </article>
+
+          <article class="card" id="m-8-1" data-title="8.1 Agent Product" data-keywords="8.1 agent product 厂商 对接 前台 查看">
+            <h3><span class="k">8.1</span> <span class="cn">厂商列表</span><span class="en">Agent Product</span></h3>
+            <p><span class="cn">用途：查看当前前台对接了哪些厂商。</span><span class="en">Purpose: View which vendors/providers are connected and available on the frontend.</span></p>
+          </article>
+
+          <article class="card" id="m-8-2" data-title="8.2 Game List" data-keywords="8.2 game list 游戏 排位 优化 顺序 置顶 热门 高毛利">
+            <h3><span class="k">8.2</span> <span class="cn">游戏排位</span><span class="en">Game List</span> <span class="k"><span class="cn">（排序优化）</span><span class="en">(Ranking optimization)</span></span></h3>
+            <p><span class="cn">用途：游戏排位优化。</span><span class="en">Purpose: Optimize game ordering to improve clicks and revenue.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">手动调整各厂商内游戏先后顺序，将热门或高毛利游戏置顶。</span><span class="en">Manually reorder games within each vendor; pin popular or high-margin games to the top.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-8-3" data-title="8.3 NEW Game" data-keywords="8.3 new game new 标记 点击率">
+            <h3><span class="k">8.3</span> <span class="cn">New 标记</span><span class="en">NEW Game</span></h3>
+            <p><span class="cn">用途：配置游戏进入 New。</span><span class="en">Purpose: Mark games as “New”.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">将特定游戏标记为“New”，提升点击率。</span><span class="en">Tag specific games as “New” to boost visibility and click-through.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-8-4" data-title="8.4 HOT/Popular Game" data-keywords="8.4 hot popular game hot popular 标记 点击率">
+            <h3><span class="k">8.4</span> <span class="cn">Hot/Popular 标记</span><span class="en">HOT/Popular Game</span></h3>
+            <p><span class="cn">用途：配置游戏进入 Hot/Popular。</span><span class="en">Purpose: Mark games as “Hot/Popular”.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">将特定游戏标记为“Hot”或“Popular”，提升点击率。</span><span class="en">Tag specific games as “Hot” or “Popular” to increase attention and CTR.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-9-1" data-title="9.1 VIP Config" data-keywords="9.1 vip config 等级 规则 引擎 门槛 升级 奖励">
+            <h3><span class="k">9.1</span> <span class="cn">VIP 规则配置</span><span class="en">VIP Config</span></h3>
+            <p><span class="cn">用途：等级规则引擎。</span><span class="en">Purpose: VIP level rules engine.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">设置升级门槛（如存 1万 升 VIP1），以及升级后的奖励额度。</span><span class="en">Define upgrade thresholds (e.g., deposit 10,000 to reach VIP1) and the rewards granted after upgrading.</span></div></div>
+            </div>
+          </article>
+
+          <article class="card" id="m-9-2" data-title="9.2 VIP Rebate Record" data-keywords="9.2 vip rebate record 返水 记录 专属">
+            <h3><span class="k">9.2</span> <span class="cn">VIP 返水记录</span><span class="en">VIP Rebate Record</span></h3>
+            <p><span class="cn">用途：VIP 专属返水记录。</span><span class="en">Purpose: VIP-only rebate records.</span></p>
+          </article>
+
+          <article class="card" id="m-9-3" data-title="9.3 VIP Reward Record" data-keywords="9.3 vip reward record 晋升 奖励 领取 记录">
+            <h3><span class="k">9.3</span> <span class="cn">VIP 奖励记录</span><span class="en">VIP Reward Record</span></h3>
+            <p><span class="cn">用途：晋升奖励领取记录。</span><span class="en">Purpose: Records of VIP promotion reward claims.</span></p>
+          </article>
+
+          <article class="card" id="m-9-4" data-title="9.4 VIP Job Monitor" data-keywords="9.4 vip job monitor 任务 监控 每日 扫描 晋升 脚本">
+            <h3><span class="k">9.4</span> <span class="cn">VIP 任务监控</span><span class="en">VIP Job Monitor</span></h3>
+            <p><span class="cn">用途：系统任务监控。</span><span class="en">Purpose: Monitor automated VIP promotion jobs.</span></p>
+            <div class="callout">
+              <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">检查系统每日扫描并晋升达标玩家的自动化脚本是否运行正常。</span><span class="en">Checks whether the daily automation that scans and promotes eligible players is running correctly.</span></div></div>
+            </div>
+          </article>
+        </section>
+
+        <div class="footer">
+          <span class="cn">提示：左侧支持搜索；可用浏览器自带打印功能导出 PDF。</span>
+          <span class="en">Tip: Use the left search; use your browser’s print feature to export as PDF.</span>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+      const openMenuBtn = document.getElementById("openMenuBtn");
+      const themeToggleBtn = document.getElementById("themeToggleBtn");
+      const themeToggleBtnTop = document.getElementById("themeToggleBtnTop");
+      const langToggleBtn = document.getElementById("langToggleBtn");
+      const searchInput = document.getElementById("searchInput");
+      const nav = document.getElementById("nav");
+      const navEmpty = document.getElementById("navEmpty");
+      const expandAllBtn = document.getElementById("expandAllBtn");
+      const collapseAllBtn = document.getElementById("collapseAllBtn");
+
+      function openSidebar(){
+        sidebar.classList.add("open");
+        overlay.classList.add("show");
+      }
+      function closeSidebar(){
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+      }
+
+      if (openMenuBtn){
+        openMenuBtn.addEventListener("click", openSidebar);
+      }
+      overlay.addEventListener("click", closeSidebar);
+
+      function getStored(key, fallback){
+        try{
+          return localStorage.getItem(key) || fallback;
+        }catch(e){
+          return fallback;
+        }
+      }
+
+      function setStored(key, value){
+        try{
+          localStorage.setItem(key, value);
+        }catch(e){
+        }
+      }
+
+      function setTheme(theme){
+        const t = theme === "dark" ? "dark" : "light";
+        document.documentElement.setAttribute("data-theme", t);
+        setStored("manual_theme", t);
+        const isDark = t === "dark";
+        if (themeToggleBtn){
+          themeToggleBtn.querySelector(".cn").textContent = isDark ? "亮色" : "暗色";
+          themeToggleBtn.querySelector(".en").textContent = isDark ? "Light" : "Dark";
+        }
+      }
+
+      function toggleTheme(){
+        const cur = document.documentElement.getAttribute("data-theme") || "light";
+        setTheme(cur === "dark" ? "light" : "dark");
+      }
+
+      function setLang(lang){
+        const allowed = new Set(["both", "cn", "en"]);
+        const v = allowed.has(lang) ? lang : "both";
+        document.documentElement.setAttribute("data-lang", v);
+        setStored("manual_lang", v);
+        if (!langToggleBtn) return;
+        const cn = langToggleBtn.querySelector(".cn");
+        const en = langToggleBtn.querySelector(".en");
+        if (v === "cn"){
+          cn.textContent = "中文";
+          en.textContent = "Chinese";
+        }else if (v === "en"){
+          cn.textContent = "英文";
+          en.textContent = "English";
+        }else{
+          cn.textContent = "双语";
+          en.textContent = "Bilingual";
+        }
+      }
+
+      function cycleLang(){
+        const cur = document.documentElement.getAttribute("data-lang") || "both";
+        const next = cur === "both" ? "cn" : (cur === "cn" ? "en" : "both");
+        setLang(next);
+      }
+
+      const initialTheme = getStored("manual_theme", document.documentElement.getAttribute("data-theme") || "light");
+      const initialLang = getStored("manual_lang", document.documentElement.getAttribute("data-lang") || "both");
+      setTheme(initialTheme);
+      setLang(initialLang);
+
+      if (themeToggleBtn){ themeToggleBtn.addEventListener("click", toggleTheme); }
+      if (themeToggleBtnTop){ themeToggleBtnTop.addEventListener("click", toggleTheme); }
+      if (langToggleBtn){ langToggleBtn.addEventListener("click", cycleLang); }
+
+      function normalize(s){
+        return (s || "").toString().trim().toLowerCase();
+      }
+
+      function setActiveNavByHash(){
+        const hash = window.location.hash || "#m-1-1";
+        const links = nav.querySelectorAll("a.tree-item");
+        links.forEach(a => a.setAttribute("aria-current", "false"));
+        const active = nav.querySelector(`a.tree-item[href="${CSS.escape(hash)}"]`);
+        if (active) active.setAttribute("aria-current", "true");
+      }
+
+      function clearHighlights(){
+        const marks = document.querySelectorAll("mark[data-hl='1']");
+        marks.forEach(m => {
+          const text = document.createTextNode(m.textContent || "");
+          m.replaceWith(text);
+        });
+      }
+
+      function highlightInCards(query){
+        clearHighlights();
+        if (!query) return;
+        const q = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const re = new RegExp(q, "ig");
+        const cards = document.querySelectorAll(".card");
+        cards.forEach(card => {
+          const walker = document.createTreeWalker(card, NodeFilter.SHOW_TEXT);
+          const nodes = [];
+          while (walker.nextNode()){
+            const n = walker.currentNode;
+            if (n.nodeValue && re.test(n.nodeValue)) nodes.push(n);
+            re.lastIndex = 0;
+          }
+          nodes.forEach(n => {
+            const frag = document.createDocumentFragment();
+            const parts = n.nodeValue.split(re);
+            const matches = n.nodeValue.match(re) || [];
+            for (let i = 0; i < parts.length; i++){
+              frag.appendChild(document.createTextNode(parts[i]));
+              if (i < matches.length){
+                const m = document.createElement("mark");
+                m.setAttribute("data-hl", "1");
+                m.textContent = matches[i];
+                frag.appendChild(m);
+              }
+            }
+            n.parentNode.replaceChild(frag, n);
+          });
+        });
+      }
+
+      function filterNav(query){
+        const q = normalize(query);
+        let any = false;
+        const groups = Array.from(nav.querySelectorAll("details.tree"));
+        groups.forEach(group => {
+          const links = Array.from(group.querySelectorAll("a.tree-item"));
+          let groupAny = false;
+          links.forEach(link => {
+            const kw = normalize(link.getAttribute("data-keywords"));
+            const txt = normalize(link.textContent);
+            const match = !q || kw.includes(q) || txt.includes(q);
+            link.style.display = match ? "flex" : "none";
+            groupAny = groupAny || match;
+            any = any || match;
+          });
+          group.style.display = groupAny ? "" : "none";
+          if (q && groupAny) group.open = true;
+        });
+        navEmpty.style.display = any ? "none" : "block";
+      }
+
+      searchInput.addEventListener("input", (e) => {
+        const q = e.target.value || "";
+        filterNav(q);
+        highlightInCards(q.trim());
+      });
+
+      function openFirstVisibleLink(){
+        const first = Array.from(nav.querySelectorAll("a.tree-item")).find(a => a.style.display !== "none");
+        if (first){
+          const href = first.getAttribute("href");
+          if (href){
+            window.location.hash = href;
+            setTimeout(() => {
+              document.querySelector(href)?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 0);
+          }
+        }
+      }
+
+      nav.addEventListener("click", (e) => {
+        const a = e.target.closest("a.tree-item");
+        if (!a) return;
+        closeSidebar();
+        setTimeout(setActiveNavByHash, 0);
+      });
+
+      window.addEventListener("hashchange", setActiveNavByHash);
+      setActiveNavByHash();
+
+      expandAllBtn.addEventListener("click", () => {
+        searchInput.value = "";
+        filterNav("");
+        clearHighlights();
+        const groups = Array.from(nav.querySelectorAll("details.tree"));
+        groups.forEach(g => (g.open = true));
+        openFirstVisibleLink();
+      });
+
+      collapseAllBtn.addEventListener("click", () => {
+        searchInput.value = "";
+        filterNav("");
+        clearHighlights();
+        const groups = Array.from(nav.querySelectorAll("details.tree"));
+        groups.forEach(g => (g.open = false));
+      });
+
+      const lastUpdated = document.getElementById("lastUpdated");
+      if (lastUpdated && !lastUpdated.textContent.trim()){
+        const d = new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        lastUpdated.textContent = `${y}-${m}-${day}`;
+      }
+    </script>
+  </body>
+</html>
