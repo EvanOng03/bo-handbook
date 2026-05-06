@@ -30,7 +30,6 @@
       }
       * { box-sizing: border-box; }
       html, body { height: 100%; }
-      html{ scroll-behavior: smooth; }
       body{
         margin: 0;
         font-family: var(--sans);
@@ -324,6 +323,7 @@
         background: var(--panel2);
         padding: 16px 16px;
         box-shadow: 0 12px 40px rgba(15, 23, 42, 0.06);
+        scroll-margin-top: 14px;
       }
       .card h3{
         margin: 0;
@@ -440,6 +440,7 @@
         .sidebar.open{ transform: translateX(0); }
         .content{ padding: calc(16px + var(--topbar-h)) 14px 32px; }
         .mobile-topbar{ display: block; }
+        .card{ scroll-margin-top: calc(var(--topbar-h) + 12px); }
       }
       @media (max-width: 640px){
         .row{
@@ -735,7 +736,6 @@
         background: rgba(7, 10, 20, 0.75);
       }
       @media (prefers-reduced-motion: reduce){
-        html{ scroll-behavior: auto; }
         .menu{ transition: none; }
       }
       .nav{
@@ -1789,10 +1789,30 @@
 
       function setActiveNavByHash(){
         const hash = window.location.hash || "#m-1-1";
+        setActiveNavById(hash);
+      }
+
+      function setActiveNavById(idOrHash){
+        const hash = (idOrHash || "").startsWith("#") ? idOrHash : `#${idOrHash}`;
+        if (!setActiveNavById._last) setActiveNavById._last = "";
+        if (hash === setActiveNavById._last) return;
         const links = nav.querySelectorAll("a.tree-item");
         links.forEach(a => a.setAttribute("aria-current", "false"));
         const active = nav.querySelector(`a.tree-item[href="${CSS.escape(hash)}"]`);
-        if (active) active.setAttribute("aria-current", "true");
+        if (!active) return;
+        active.setAttribute("aria-current", "true");
+        const group = active.closest("details.tree");
+        if (group && !group.open) group.open = true;
+        if (nav){
+          const navRect = nav.getBoundingClientRect();
+          const aRect = active.getBoundingClientRect();
+          const pad = 12;
+          if (aRect.top < navRect.top + pad || aRect.bottom > navRect.bottom - pad){
+            const delta = (aRect.top - navRect.top) - (nav.clientHeight * 0.35);
+            nav.scrollTop = nav.scrollTop + delta;
+          }
+        }
+        setActiveNavById._last = hash;
       }
 
       function clearHighlights(){
@@ -1884,6 +1904,40 @@
 
       window.addEventListener("hashchange", setActiveNavByHash);
       setActiveNavByHash();
+
+      const cardsForSpy = Array.from(document.querySelectorAll(".card[id]"));
+      if (cardsForSpy.length){
+        let spyTicking = false;
+        function topOffset(){
+          const isMobile = window.matchMedia && window.matchMedia("(max-width: 980px)").matches;
+          if (!isMobile) return 8;
+          const v = getComputedStyle(document.documentElement).getPropertyValue("--topbar-h");
+          const n = parseInt(v, 10);
+          return (Number.isFinite(n) ? n : 56) + 10;
+        }
+        function updateScrollSpy(){
+          spyTicking = false;
+          const offset = topOffset();
+          let current = cardsForSpy[0].id;
+          for (const card of cardsForSpy){
+            const rect = card.getBoundingClientRect();
+            if (rect.top - offset <= 0){
+              current = card.id;
+            }else{
+              break;
+            }
+          }
+          if (current) setActiveNavById(current);
+        }
+        function requestSpy(){
+          if (spyTicking) return;
+          spyTicking = true;
+          requestAnimationFrame(updateScrollSpy);
+        }
+        window.addEventListener("scroll", requestSpy, { passive: true });
+        window.addEventListener("resize", requestSpy);
+        setTimeout(updateScrollSpy, 0);
+      }
 
       expandAllBtn.addEventListener("click", () => {
         searchInput.value = "";
