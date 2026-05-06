@@ -34,9 +34,10 @@
         margin: 0;
         font-family: var(--sans);
         color: var(--text);
-        background: radial-gradient(900px 520px at 30% 10%, rgba(37, 99, 235, 0.10), transparent 62%),
-          radial-gradient(900px 520px at 85% 15%, rgba(6, 182, 212, 0.08), transparent 60%),
-          linear-gradient(180deg, #f7f8ff, #f6f7fb 42%, #f5f7fb);
+        background:
+          radial-gradient(1000px 560px at 22% 12%, rgba(99, 102, 241, 0.12), transparent 60%),
+          radial-gradient(900px 520px at 86% 10%, rgba(14, 165, 233, 0.10), transparent 62%),
+          linear-gradient(180deg, #fafbff, #f6f7fb 42%, #f4f6fb);
         background-color: #f6f7fb;
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -277,8 +278,8 @@
         color: rgba(15, 23, 42, 0.92);
       }
       .tree-item[aria-current="true"]{
-        background: rgba(6, 182, 212, 0.10);
-        border-color: rgba(6, 182, 212, 0.25);
+        background: rgba(99, 102, 241, 0.10);
+        border-color: rgba(99, 102, 241, 0.22);
         color: rgba(15, 23, 42, 0.92);
       }
       .tree-no{
@@ -311,9 +312,9 @@
         border: 1px solid var(--border);
         border-radius: 26px;
         background:
-          radial-gradient(900px 360px at 15% 20%, rgba(37, 99, 235, 0.10), transparent 65%),
-          radial-gradient(700px 320px at 85% 10%, rgba(6, 182, 212, 0.08), transparent 64%),
-          rgba(255, 255, 255, 0.90);
+          radial-gradient(900px 360px at 15% 20%, rgba(99, 102, 241, 0.10), transparent 65%),
+          radial-gradient(700px 320px at 85% 10%, rgba(14, 165, 233, 0.08), transparent 64%),
+          rgba(255, 255, 255, 0.92);
         box-shadow: var(--shadow);
         padding: 20px 20px;
         overflow: hidden;
@@ -355,8 +356,8 @@
         font-size: 11px;
         padding: 2px 7px;
         border-radius: 999px;
-        background: rgba(37, 99, 235, 0.10);
-        border: 1px solid rgba(37, 99, 235, 0.22);
+        background: rgba(15, 23, 42, 0.04);
+        border: 1px solid rgba(15, 23, 42, 0.10);
       }
       .grid{
         margin-top: 16px;
@@ -368,12 +369,13 @@
         grid-column: 1 / -1;
         border: 1px solid var(--border);
         border-radius: 18px;
-        background: linear-gradient(135deg, rgba(37, 99, 235, 0.10), rgba(6, 182, 212, 0.06));
+        background:
+          linear-gradient(135deg, rgba(15, 23, 42, 0.02), rgba(99, 102, 241, 0.08), rgba(14, 165, 233, 0.06));
         box-shadow: 0 12px 34px rgba(15, 23, 42, 0.05);
         padding: 12px 14px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
         gap: 14px;
       }
       .section-left{
@@ -381,6 +383,7 @@
         align-items: center;
         gap: 12px;
         min-width: 0;
+        flex: 1 1 auto;
       }
       .section-no{
         font-family: var(--mono);
@@ -388,8 +391,8 @@
         font-weight: 800;
         padding: 6px 10px;
         border-radius: 999px;
-        background: rgba(37, 99, 235, 0.12);
-        border: 1px solid rgba(37, 99, 235, 0.22);
+        background: rgba(15, 23, 42, 0.04);
+        border: 1px solid rgba(15, 23, 42, 0.10);
         color: rgba(15, 23, 42, 0.92);
         flex: 0 0 auto;
       }
@@ -415,12 +418,58 @@
         text-overflow: ellipsis;
       }
       .section-hint{
+        margin-left: auto;
         font-family: var(--mono);
         font-size: 11px;
         color: var(--subtle);
         opacity: 0.9;
         flex: 0 0 auto;
+        width: 88px;
+        text-align: right;
+        display: grid;
+        justify-items: end;
+        line-height: 1.15;
+        white-space: nowrap;
       }
+      .section-hint .cn,
+      .section-hint .en{
+        display: block;
+      }      .module{
+        grid-column: 1 / -1;
+        display: grid;
+        gap: 14px;
+      }
+      .module-head{
+        width: 100%;
+        text-align: left;
+        appearance: none;
+        -webkit-appearance: none;
+        border: 1px solid var(--border);
+        cursor: pointer;
+      }
+      .section-toggle{
+        width: 22px;
+        height: 22px;
+        border-radius: 8px;
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        background: rgba(255, 255, 255, 0.70);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--muted);
+        transform: rotate(-90deg);
+        transition: transform 180ms ease;
+        flex: 0 0 auto;
+      }
+      .module.open .section-toggle{ transform: rotate(0deg); }
+      .module-body{
+        display: none;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+      }
+      .module.open .module-body{ display: grid; }
       .card{
         grid-column: span 12;
         border: 1px solid var(--border);
@@ -617,8 +666,24 @@
         inset: 0;
         background: rgba(0,0,0,0.45);
         z-index: 25;
+        pointer-events: none;
       }
-      .overlay.show{ display: block; }
+      .overlay.show{
+        display: block;
+        pointer-events: auto;
+      }
+
+      .js-status{
+        margin-top: 10px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: rgba(245, 158, 11, 0.08);
+        color: var(--text);
+        font-size: 12.5px;
+        line-height: 1.55;
+      }
+      html.js-ready .js-status{ display: none; }
 
       .lang-mini{
         font-family: var(--mono);
@@ -785,6 +850,11 @@
       }
       html[data-theme="dark"] .section-title .en{ color: rgba(255, 255, 255, 0.74); }
       html[data-theme="dark"] .section-hint{ color: rgba(255, 255, 255, 0.70); }
+      html[data-theme="dark"] .section-toggle{
+        border-color: rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.06);
+        color: rgba(255, 255, 255, 0.86);
+      }
       html[data-theme="dark"][data-lang="both"] p .en,
       html[data-theme="dark"][data-lang="both"] .value .en{
         border-left-color: rgba(0, 212, 255, 0.22);
@@ -1226,6 +1296,10 @@
         <header class="hero" id="top">
           <h2><span class="cn">后台菜单手册</span><span class="en">Admin Menu Manual</span></h2>
           <p><span class="cn"></span><span class="en"></span></p>
+          <div class="js-status" id="jsStatus">
+            <span class="cn">当前预览环境没有执行脚本，所以所有按钮都会“点了没反应”。请用 Chrome/Edge 直接打开 index.html（不要用 IDE 内置预览），或用本地服务器预览。</span>
+            <span class="en">Scripts are not running in this preview, so buttons won’t respond. Open index.html in Chrome/Edge (not the IDE’s built-in preview), or preview via a local server.</span>
+          </div>
           <div class="meta">
             <span class="tag"><b><span class="cn">范围</span><span class="en">Scope</span></b> <span class="cn">1–9 全部模块</span><span class="en">Modules 1–9</span></span>
             <span class="tag"><b><span class="cn">搜索</span><span class="en">Search</span></b> <span class="cn">支持中文/英文/编号</span><span class="en">Chinese / English / Numbers</span></span>
@@ -1234,29 +1308,37 @@
         </header>
 
         <section class="grid">
-          <div class="section-head" id="sec-1">
-            <div class="section-left">
-              <span class="section-no">1</span>
-              <div class="section-title"><span class="cn">1. 首页</span><span class="en">1. HOME</span></div>
-            </div>
-            <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
-          </div>
-          <article class="card" id="m-1-1" data-title="1.1 Home" data-keywords="1.1 home 大屏 实时 监控 经营 状况 存款 提款 净利润 在线 新增注册">
+          <div class="module open" id="module-1" data-module="1">
+            <button class="section-head module-head" id="sec-1" type="button" aria-expanded="true" aria-controls="module-body-1">
+              <div class="section-left">
+                <span class="section-no">1</span>
+                <div class="section-title"><span class="cn">1. 首页</span><span class="en">1. HOME</span></div>
+              </div>
+              <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
+              <span class="section-toggle" aria-hidden="true">▾</span>
+            </button>
+            <div class="module-body" id="module-body-1">
+              <article class="card" id="m-1-1" data-title="1.1 Home" data-keywords="1.1 home 大屏 实时 监控 经营 状况 存款 提款 净利润 在线 新增注册">
             <h3><span class="k">1.1</span> <span class="cn">首页</span><span class="en">Home</span> <span class="k"><span class="cn">（经营实时监控大屏）</span><span class="en">(Real-time operations dashboard)</span></span></h3>
             <p><span class="cn">用途：平台经营状况的实时监控大屏。</span><span class="en">Purpose: A real-time dashboard to monitor platform operations.</span></p>
             <div class="callout">
               <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">汇总显示今日总存款、总提款、净利润、在线人数、新增注册人数等核心指标，便于管理者快速判断盈亏与运营趋势。</span><span class="en">Shows key daily KPIs (total deposits/withdrawals, net profit, online users, new registrations, etc.) so managers can quickly assess P&L and trends.</span></div></div>
             </div>
-          </article>
-
-          <div class="section-head" id="sec-2">
-            <div class="section-left">
-              <span class="section-no">2</span>
-              <div class="section-title"><span class="cn">2. 银行</span><span class="en">2. BANK</span></div>
+              </article>
             </div>
-            <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
           </div>
-          <article class="card" id="m-2-1" data-title="2.1 Bank List" data-keywords="2.1 bank list 本地银行 类型 开关 maybank cimb">
+
+          <div class="module" id="module-2" data-module="2">
+            <button class="section-head module-head" id="sec-2" type="button" aria-expanded="false" aria-controls="module-body-2">
+              <div class="section-left">
+                <span class="section-no">2</span>
+                <div class="section-title"><span class="cn">2. 银行</span><span class="en">2. BANK</span></div>
+              </div>
+              <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
+              <span class="section-toggle" aria-hidden="true">▾</span>
+            </button>
+            <div class="module-body" id="module-body-2">
+              <article class="card" id="m-2-1" data-title="2.1 Bank List" data-keywords="2.1 bank list 本地银行 类型 开关 maybank cimb">
             <h3><span class="k">2.1</span> <span class="cn">银行列表</span><span class="en">Bank List</span> <span class="k"><span class="cn">（玩家可见本地银行类型）</span><span class="en">(Player-visible local banks)</span></span></h3>
             <p><span class="cn">用途：设置平台允许玩家使用的本地银行类型。</span><span class="en">Purpose: Enable/disable local bank options available to players.</span></p>
             <div class="callout">
@@ -1308,15 +1390,20 @@
               <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">与 2.4 类似，但专门针对代理层级，用于结算佣金时的银行卡绑定。</span><span class="en">Similar to 2.4, but for agent-level bank binding used in commission settlements.</span></div></div>
             </div>
           </article>
-
-          <div class="section-head" id="sec-3">
-            <div class="section-left">
-              <span class="section-no">3</span>
-              <div class="section-title"><span class="cn">3. 账务/转账</span><span class="en">3. TRANSFER</span></div>
             </div>
-            <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
           </div>
-          <article class="card" id="m-3-1" data-title="3.1 New Transaction" data-keywords="3.1 new transaction 审核 中心 存款 提款 通过 拒绝 payment gateway 自动">
+
+          <div class="module" id="module-3" data-module="3">
+            <button class="section-head module-head" id="sec-3" type="button" aria-expanded="false" aria-controls="module-body-3">
+              <div class="section-left">
+                <span class="section-no">3</span>
+                <div class="section-title"><span class="cn">3. 账务/转账</span><span class="en">3. TRANSFER</span></div>
+              </div>
+              <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
+              <span class="section-toggle" aria-hidden="true">▾</span>
+            </button>
+            <div class="module-body" id="module-body-3">
+              <article class="card" id="m-3-1" data-title="3.1 New Transaction" data-keywords="3.1 new transaction 审核 中心 存款 提款 通过 拒绝 payment gateway 自动">
             <h3><span class="k">3.1</span> <span class="cn">新订单审核</span><span class="en">New Transaction</span> <span class="k"><span class="cn">（核心账务审核中心）</span><span class="en">(Core approval center)</span></span></h3>
             <p><span class="cn">用途：所有存款、提款申请的审核入口。</span><span class="en">Purpose: Central place to review and approve deposits/withdrawals.</span></p>
             <div class="callout">
@@ -1373,15 +1460,20 @@
             <h3><span class="k">3.8</span> <span class="cn">Pro DP History</span><span class="en">Pro DP History</span> <span class="k"><span class="cn">（暂无功能）</span><span class="en">(Not available yet)</span></span></h3>
             <p><span class="status"><span class="dot warn"></span><span class="cn">暂未有功能</span><span class="en">Not available yet</span></span></p>
           </article>
-
-          <div class="section-head" id="sec-4">
-            <div class="section-left">
-              <span class="section-no">4</span>
-              <div class="section-title"><span class="cn">4. 账号</span><span class="en">4. ACCOUNT</span></div>
             </div>
-            <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
           </div>
-          <article class="card" id="m-4-1" data-title="4.1 Agent List" data-keywords="4.1 agent list 代理 创建 管理 占成 佣金 模式">
+
+          <div class="module" id="module-4" data-module="4">
+            <button class="section-head module-head" id="sec-4" type="button" aria-expanded="false" aria-controls="module-body-4">
+              <div class="section-left">
+                <span class="section-no">4</span>
+                <div class="section-title"><span class="cn">4. 账号</span><span class="en">4. ACCOUNT</span></div>
+              </div>
+              <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
+              <span class="section-toggle" aria-hidden="true">▾</span>
+            </button>
+            <div class="module-body" id="module-body-4">
+              <article class="card" id="m-4-1" data-title="4.1 Agent List" data-keywords="4.1 agent list 代理 创建 管理 占成 佣金 模式">
             <h3><span class="k">4.1</span> <span class="cn">代理列表</span><span class="en">Agent List</span></h3>
             <p><span class="cn">用途：下线代理创建与管理。</span><span class="en">Purpose: Create and manage downline agents.</span></p>
             <div class="callout">
@@ -1454,15 +1546,20 @@
               <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">管理员核对 4.9 计算结果无误后，在此处执行发放，佣金将转入代理余额。</span><span class="en">After confirming results from 4.9, execute payout here; the commission will be credited to the agent balance.</span></div></div>
             </div>
           </article>
-
-          <div class="section-head" id="sec-5">
-            <div class="section-left">
-              <span class="section-no">5</span>
-              <div class="section-title"><span class="cn">5. 报表</span><span class="en">5. REPORT</span></div>
             </div>
-            <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
           </div>
-          <article class="card" id="m-5-1" data-title="5.1 Agent DP/WD Report" data-keywords="5.1 agent dp wd report 代理 业绩 日报 存提 总额">
+
+          <div class="module" id="module-5" data-module="5">
+            <button class="section-head module-head" id="sec-5" type="button" aria-expanded="false" aria-controls="module-body-5">
+              <div class="section-left">
+                <span class="section-no">5</span>
+                <div class="section-title"><span class="cn">5. 报表</span><span class="en">5. REPORT</span></div>
+              </div>
+              <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
+              <span class="section-toggle" aria-hidden="true">▾</span>
+            </button>
+            <div class="module-body" id="module-body-5">
+              <article class="card" id="m-5-1" data-title="5.1 Agent DP/WD Report" data-keywords="5.1 agent dp wd report 代理 业绩 日报 存提 总额">
             <h3><span class="k">5.1</span> <span class="cn">代理存提日报</span><span class="en">Agent DP/WD Report</span></h3>
             <p><span class="cn">用途：代理业绩日报。</span><span class="en">Purpose: Daily agent performance report.</span></p>
             <div class="callout">
@@ -1557,15 +1654,20 @@
               <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">统计 FreeSpin（免费旋转）或 Tournament（锦标赛）等特殊活动的详细数据和玩家表现。</span><span class="en">Provides detailed metrics and player performance for events like FreeSpin or Tournament.</span></div></div>
             </div>
           </article>
-
-          <div class="section-head" id="sec-6">
-            <div class="section-left">
-              <span class="section-no">6</span>
-              <div class="section-title"><span class="cn">6. 优惠</span><span class="en">6. PROMOTION</span></div>
             </div>
-            <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
           </div>
-          <article class="card" id="m-6-1" data-title="6.1 Rebate Set" data-keywords="6.1 rebate set 返水 比例 三级 member onereff tworeff 公式 投注额">
+
+          <div class="module" id="module-6" data-module="6">
+            <button class="section-head module-head" id="sec-6" type="button" aria-expanded="false" aria-controls="module-body-6">
+              <div class="section-left">
+                <span class="section-no">6</span>
+                <div class="section-title"><span class="cn">6. 优惠</span><span class="en">6. PROMOTION</span></div>
+              </div>
+              <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
+              <span class="section-toggle" aria-hidden="true">▾</span>
+            </button>
+            <div class="module-body" id="module-body-6">
+              <article class="card" id="m-6-1" data-title="6.1 Rebate Set" data-keywords="6.1 rebate set 返水 比例 三级 member onereff tworeff 公式 投注额">
             <h3><span class="k">6.1</span> <span class="cn">返水设置</span><span class="en">Rebate Set</span></h3>
             <p><span class="cn">用途：返水比例核心设置。</span><span class="en">Purpose: Configure rebate percentage rules.</span></p>
             <div class="callout">
@@ -1617,15 +1719,20 @@
               <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">记录玩家因推荐他人而获得的每一笔佣金历史。</span><span class="en">Records each commission earned through referrals.</span></div></div>
             </div>
           </article>
-
-          <div class="section-head" id="sec-7">
-            <div class="section-left">
-              <span class="section-no">7</span>
-              <div class="section-title"><span class="cn">7. 系统设置</span><span class="en">7. SYSTEM SET</span></div>
             </div>
-            <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
           </div>
-          <article class="card" id="m-7-1" data-title="7.1 Banner List" data-keywords="7.1 banner list 暂未有功能">
+
+          <div class="module" id="module-7" data-module="7">
+            <button class="section-head module-head" id="sec-7" type="button" aria-expanded="false" aria-controls="module-body-7">
+              <div class="section-left">
+                <span class="section-no">7</span>
+                <div class="section-title"><span class="cn">7. 系统设置</span><span class="en">7. SYSTEM SET</span></div>
+              </div>
+              <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
+              <span class="section-toggle" aria-hidden="true">▾</span>
+            </button>
+            <div class="module-body" id="module-body-7">
+              <article class="card" id="m-7-1" data-title="7.1 Banner List" data-keywords="7.1 banner list 暂未有功能">
             <h3><span class="k">7.1</span> <span class="cn">Banner 列表</span><span class="en">Banner List</span> <span class="k"><span class="cn">（暂无功能）</span><span class="en">(Not available yet)</span></span></h3>
             <p><span class="status"><span class="dot warn"></span><span class="cn">暂未有功能</span><span class="en">Not available yet</span></span></p>
           </article>
@@ -1713,15 +1820,20 @@
             <h3><span class="k">7.25</span> <span class="cn">悬浮窗设置</span><span class="en">Float Set</span></h3>
             <p><span class="cn">用途：前端悬浮窗设置。</span><span class="en">Purpose: Configure frontend floating widgets/windows.</span></p>
           </article>
-
-          <div class="section-head" id="sec-8">
-            <div class="section-left">
-              <span class="section-no">8</span>
-              <div class="section-title"><span class="cn">8. 产品/游戏</span><span class="en">8. PRODUCT</span></div>
             </div>
-            <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
           </div>
-          <article class="card" id="m-8-1" data-title="8.1 Agent Product" data-keywords="8.1 agent product 厂商 对接 前台 查看">
+
+          <div class="module" id="module-8" data-module="8">
+            <button class="section-head module-head" id="sec-8" type="button" aria-expanded="false" aria-controls="module-body-8">
+              <div class="section-left">
+                <span class="section-no">8</span>
+                <div class="section-title"><span class="cn">8. 产品/游戏</span><span class="en">8. PRODUCT</span></div>
+              </div>
+              <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
+              <span class="section-toggle" aria-hidden="true">▾</span>
+            </button>
+            <div class="module-body" id="module-body-8">
+              <article class="card" id="m-8-1" data-title="8.1 Agent Product" data-keywords="8.1 agent product 厂商 对接 前台 查看">
             <h3><span class="k">8.1</span> <span class="cn">厂商列表</span><span class="en">Agent Product</span></h3>
             <p><span class="cn">用途：查看当前前台对接了哪些厂商。</span><span class="en">Purpose: View which vendors/providers are connected and available on the frontend.</span></p>
           </article>
@@ -1749,15 +1861,20 @@
               <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">将特定游戏标记为“Hot”或“Popular”，提升点击率。</span><span class="en">Tag specific games as “Hot” or “Popular” to increase attention and CTR.</span></div></div>
             </div>
           </article>
-
-          <div class="section-head" id="sec-9">
-            <div class="section-left">
-              <span class="section-no">9</span>
-              <div class="section-title"><span class="cn">9. VIP</span><span class="en">9. VIP</span></div>
             </div>
-            <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
           </div>
-          <article class="card" id="m-9-1" data-title="9.1 VIP Config" data-keywords="9.1 vip config 等级 规则 引擎 门槛 升级 奖励">
+
+          <div class="module" id="module-9" data-module="9">
+            <button class="section-head module-head" id="sec-9" type="button" aria-expanded="false" aria-controls="module-body-9">
+              <div class="section-left">
+                <span class="section-no">9</span>
+                <div class="section-title"><span class="cn">9. VIP</span><span class="en">9. VIP</span></div>
+              </div>
+              <div class="section-hint"><span class="cn">目录</span><span class="en">Section</span></div>
+              <span class="section-toggle" aria-hidden="true">▾</span>
+            </button>
+            <div class="module-body" id="module-body-9">
+              <article class="card" id="m-9-1" data-title="9.1 VIP Config" data-keywords="9.1 vip config 等级 规则 引擎 门槛 升级 奖励">
             <h3><span class="k">9.1</span> <span class="cn">VIP 规则配置</span><span class="en">VIP Config</span></h3>
             <p><span class="cn">用途：等级规则引擎。</span><span class="en">Purpose: VIP level rules engine.</span></p>
             <div class="callout">
@@ -1782,16 +1899,20 @@
               <div class="row"><div class="label"><span class="cn">详细讲解</span><span class="en">Details</span></div><div class="value"><span class="cn">检查系统每日扫描并晋升达标玩家的自动化脚本是否运行正常。</span><span class="en">Checks whether the daily automation that scans and promotes eligible players is running correctly.</span></div></div>
             </div>
           </article>
+            </div>
+          </div>
         </section>
 
         <div class="footer">
-          <span class="cn"></span>
-          <span class="en"></span>
+          <span class="cn">提示：左侧支持搜索；可用浏览器自带打印功能导出 PDF。</span>
+          <span class="en">Tip: Use the left search; use your browser’s print feature to export as PDF.</span>
         </div>
       </main>
     </div>
 
     <script>
+      document.documentElement.classList.add("js-on");
+      try{
       const sidebar = document.getElementById("sidebar");
       const overlay = document.getElementById("overlay");
       const openMenuBtn = document.getElementById("openMenuBtn");
@@ -1807,20 +1928,23 @@
       const navEmpty = document.getElementById("navEmpty");
       const expandAllBtn = document.getElementById("expandAllBtn");
       const collapseAllBtn = document.getElementById("collapseAllBtn");
+      const modules = Array.from(document.querySelectorAll(".module"));
 
       function openSidebar(){
-        sidebar.classList.add("open");
-        overlay.classList.add("show");
+        if (sidebar) sidebar.classList.add("open");
+        if (overlay) overlay.classList.add("show");
       }
       function closeSidebar(){
-        sidebar.classList.remove("open");
-        overlay.classList.remove("show");
+        if (sidebar) sidebar.classList.remove("open");
+        if (overlay) overlay.classList.remove("show");
       }
 
       if (openMenuBtn){
         openMenuBtn.addEventListener("click", openSidebar);
       }
-      overlay.addEventListener("click", closeSidebar);
+      if (overlay){
+        overlay.addEventListener("click", closeSidebar);
+      }
 
       function getStored(key, fallback){
         try{
@@ -1843,8 +1967,10 @@
         setStored("manual_theme", t);
         const isDark = t === "dark";
         if (themeToggleBtn){
-          themeToggleBtn.querySelector(".cn").textContent = isDark ? "亮色" : "暗色";
-          themeToggleBtn.querySelector(".en").textContent = isDark ? "Light" : "Dark";
+          const cn = themeToggleBtn.querySelector(".cn");
+          const en = themeToggleBtn.querySelector(".en");
+          if (cn) cn.textContent = isDark ? "亮色" : "暗色";
+          if (en) en.textContent = isDark ? "Light" : "Dark";
         }
       }
 
@@ -1876,6 +2002,7 @@
           if (!el) return;
           const cn = el.querySelector(".cn");
           const en = el.querySelector(".en");
+          if (!cn || !en) return;
           if (v === "cn"){
             cn.textContent = "中文";
             en.textContent = "CN";
@@ -1937,11 +2064,88 @@
         if (langToggleBtnTop) langToggleBtnTop.setAttribute("aria-expanded", "false");
       }
 
+      let hasInteracted = false;
+      let searchActive = false;
+      let autoCollapse = true;
+      let suppressSpyUntil = 0;
+      let navPinHash = "";
+      let navPinUntil = 0;
+      let reduceMotionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+      let reduceMotion = !!(reduceMotionQuery && reduceMotionQuery.matches);
+      if (reduceMotionQuery && reduceMotionQuery.addEventListener){
+        reduceMotionQuery.addEventListener("change", (e) => { reduceMotion = !!e.matches; });
+      }
+
+      function pinNav(hash, ms){
+        if (!hash) return;
+        const h = String(hash).startsWith("#") ? String(hash) : `#${hash}`;
+        navPinHash = h;
+        navPinUntil = Date.now() + (Number(ms) || 0);
+      }
+
       const initialTheme = getStored("manual_theme", document.documentElement.getAttribute("data-theme") || "light");
       const initialLang = getStored("manual_lang", document.documentElement.getAttribute("data-lang") || "both");
       setTheme(initialTheme);
       setLang(initialLang);
       applyI18nStaticText(initialLang);
+
+      if (modules.length){
+        modules.forEach(m => setModuleOpen(m, false, false));
+        openModuleForHash(window.location.hash || "#m-1-1", false);
+        const opened = modules.find(m => m.classList.contains("open"));
+        if (!opened) setModuleOpen(modules[0], true, false);
+      }
+
+      function syncNavToModule(moduleEl){
+        if (!moduleEl || !nav) return;
+        const body = moduleEl.querySelector(".module-body");
+        const firstCard = body ? body.querySelector(".card[id]") : null;
+        const id = firstCard ? firstCard.id : "";
+        if (id){
+          setActiveNavById(id);
+          pinNav(id, 900);
+          suppressSpyUntil = Date.now() + 500;
+          if (searchActive){
+            const safeHash = String(`#${id}`).replace(/"/g, '\\"');
+            const active = nav.querySelector(`a.tree-item[href="${safeHash}"]`);
+            const group = active ? active.closest("details.tree") : null;
+            if (group) setGroupOpen(group, true, true);
+          }
+          return;
+        }
+
+        const mod = moduleEl.getAttribute("data-module") || "";
+        if (!mod) return;
+        const fallback = nav.querySelector(`a.tree-item[href^="#m-${mod}-"]`);
+        if (!fallback) return;
+        const href = fallback.getAttribute("href");
+        if (!href) return;
+        setActiveNavById(href);
+        pinNav(href, 900);
+        suppressSpyUntil = Date.now() + 500;
+        if (searchActive){
+          const safeHash = String(href).replace(/"/g, '\\"');
+          const active = nav.querySelector(`a.tree-item[href="${safeHash}"]`);
+          const group = active ? active.closest("details.tree") : null;
+          if (group) setGroupOpen(group, true, true);
+        }
+      }
+
+      document.addEventListener("click", (e) => {
+        const head = e.target && e.target.closest ? e.target.closest(".module-head") : null;
+        if (!head) return;
+        const m = head.closest(".module");
+        if (!m) return;
+        hasInteracted = true;
+        const isOpen = m.classList.contains("open");
+        if (isOpen){
+          setModuleOpen(m, false, true);
+        }else{
+          setModuleOpen(m, true, true);
+          closeOtherModules(m);
+          syncNavToModule(m);
+        }
+      });
 
       if (themeToggleBtn){ themeToggleBtn.addEventListener("click", toggleTheme); }
       if (themeToggleBtnTop){ themeToggleBtnTop.addEventListener("click", toggleTheme); }
@@ -1978,13 +2182,127 @@
         return (s || "").toString().trim().toLowerCase();
       }
 
-      let hasInteracted = false;
-      let searchActive = false;
-      let autoCollapse = true;
-      const reduceMotionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
-      let reduceMotion = !!(reduceMotionQuery && reduceMotionQuery.matches);
-      if (reduceMotionQuery && reduceMotionQuery.addEventListener){
-        reduceMotionQuery.addEventListener("change", (e) => { reduceMotion = !!e.matches; });
+      function setModuleOpen(moduleEl, open, animate){
+        if (!moduleEl) return;
+        const head = moduleEl.querySelector(".module-head");
+        const body = moduleEl.querySelector(".module-body");
+        if (!head || !body) return;
+
+        const shouldAnimate = animate !== false && !reduceMotion;
+        const setState = (isOpen) => {
+          moduleEl.classList.toggle("open", isOpen);
+          head.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        };
+        const isVisiblyOpen = () => {
+          if (moduleEl.classList.contains("open")) return true;
+          if (head.getAttribute("aria-expanded") === "true") return true;
+          try{
+            return getComputedStyle(body).display !== "none";
+          }catch(e){
+            return body.style.display && body.style.display !== "none";
+          }
+        };
+
+        if (body._animCancel){
+          body._animCancel();
+        }
+
+        if (!shouldAnimate){
+          body.style.display = open ? "grid" : "none";
+          body.style.height = "";
+          body.style.opacity = "";
+          body.style.transform = "";
+          body.style.overflow = "";
+          body.style.transition = "";
+          setState(!!open);
+          return;
+        }
+
+        const dur = 280;
+        const ease = "cubic-bezier(0.2, 0.85, 0.2, 1)";
+
+        if (open){
+          if (isVisiblyOpen()) return;
+          setState(true);
+          body.style.display = "grid";
+          body.style.overflow = "hidden";
+          body.style.height = "0px";
+          body.style.opacity = "0";
+          body.style.transform = "translateY(-10px)";
+          void body.offsetHeight;
+          const target = body.scrollHeight;
+          body.style.transition = `height ${dur}ms ${ease}, opacity 200ms ease, transform 200ms ease`;
+          requestAnimationFrame(() => {
+            body.style.height = `${target}px`;
+            body.style.opacity = "1";
+            body.style.transform = "translateY(0)";
+          });
+
+          const onEnd = (ev) => {
+            if (ev && ev.target !== body) return;
+            cleanup();
+          };
+          const cleanup = () => {
+            body.removeEventListener("transitionend", onEnd);
+            body.style.transition = "";
+            body.style.height = "";
+            body.style.opacity = "";
+            body.style.transform = "";
+            body.style.overflow = "";
+            body._animCancel = null;
+          };
+          body._animCancel = cleanup;
+          body.addEventListener("transitionend", onEnd);
+        }else{
+          if (!isVisiblyOpen()) return;
+          setState(false);
+          body.style.display = "grid";
+          body.style.overflow = "hidden";
+          const start = body.scrollHeight;
+          body.style.height = `${start}px`;
+          body.style.opacity = "1";
+          body.style.transform = "translateY(0)";
+          void body.offsetHeight;
+          body.style.transition = `height ${dur}ms ${ease}, opacity 160ms ease, transform 160ms ease`;
+          requestAnimationFrame(() => {
+            body.style.height = "0px";
+            body.style.opacity = "0";
+            body.style.transform = "translateY(-10px)";
+          });
+
+          const onEnd = (ev) => {
+            if (ev && ev.target !== body) return;
+            body.style.display = "none";
+            cleanup();
+          };
+          const cleanup = () => {
+            body.removeEventListener("transitionend", onEnd);
+            body.style.transition = "";
+            body.style.height = "";
+            body.style.opacity = "";
+            body.style.transform = "";
+            body.style.overflow = "";
+            body._animCancel = null;
+          };
+          body._animCancel = cleanup;
+          body.addEventListener("transitionend", onEnd);
+        }
+      }
+
+      function closeOtherModules(current){
+        modules.forEach(m => {
+          if (m !== current) setModuleOpen(m, false, true);
+        });
+      }
+
+      function openModuleForHash(hash, animate){
+        if (!hash || !hash.startsWith("#")) return;
+        const el = document.querySelector(hash);
+        if (!el) return;
+        const moduleEl = el.closest(".module");
+        if (!moduleEl) return;
+        setModuleOpen(moduleEl, true, animate);
+        closeOtherModules(moduleEl);
       }
 
       function setGroupOpen(group, open, animate){
@@ -2013,30 +2331,29 @@
           group.open = true;
           content.style.overflow = "hidden";
           content.style.height = "0px";
-          content.style.opacity = "0";
-          content.style.transform = "translateY(-8px)";
           void content.offsetHeight;
           const target = content.scrollHeight;
-          content.style.transition = `height ${dur}ms ${ease}, opacity 180ms ease, transform 180ms ease`;
+          content.style.transition = `height ${dur}ms ${ease}`;
           requestAnimationFrame(() => {
             content.style.height = `${target}px`;
-            content.style.opacity = "1";
-            content.style.transform = "translateY(0)";
           });
 
+          let ended = false;
           const onEnd = (ev) => {
             if (ev && ev.target !== content) return;
             cleanup();
           };
           const cleanup = () => {
+            if (ended) return;
+            ended = true;
+            clearTimeout(timer);
             content.removeEventListener("transitionend", onEnd);
             content.style.transition = "";
             content.style.height = "";
-            content.style.opacity = "";
-            content.style.transform = "";
             content.style.overflow = "";
             content._animCancel = null;
           };
+          const timer = setTimeout(cleanup, dur + 80);
           content._animCancel = cleanup;
           content.addEventListener("transitionend", onEnd);
         }else{
@@ -2044,47 +2361,56 @@
           content.style.overflow = "hidden";
           const start = content.scrollHeight;
           content.style.height = `${start}px`;
-          content.style.opacity = "1";
-          content.style.transform = "translateY(0)";
           void content.offsetHeight;
-          content.style.transition = `height ${dur}ms ${ease}, opacity 160ms ease, transform 160ms ease`;
+          content.style.transition = `height ${dur}ms ${ease}`;
           requestAnimationFrame(() => {
             content.style.height = "0px";
-            content.style.opacity = "0";
-            content.style.transform = "translateY(-8px)";
           });
 
+          let ended = false;
           const onEnd = (ev) => {
             if (ev && ev.target !== content) return;
+            finish();
+          };
+          const finish = () => {
+            if (ended) return;
+            ended = true;
+            clearTimeout(timer);
             group.open = false;
+            const activeEl = document.activeElement;
+            if (activeEl && group.contains(activeEl) && activeEl.blur){
+              activeEl.blur();
+            }
             cleanup();
           };
           const cleanup = () => {
             content.removeEventListener("transitionend", onEnd);
             content.style.transition = "";
             content.style.height = "";
-            content.style.opacity = "";
-            content.style.transform = "";
             content.style.overflow = "";
             content._animCancel = null;
           };
-          content._animCancel = cleanup;
+          const timer = setTimeout(finish, dur + 80);
+          content._animCancel = finish;
           content.addEventListener("transitionend", onEnd);
         }
       }
 
       function setActiveNavByHash(){
         const hash = window.location.hash || "#m-1-1";
+        openModuleForHash(hash, true);
         setActiveNavById(hash);
       }
 
       function setActiveNavById(idOrHash){
+        if (!nav) return;
         const hash = (idOrHash || "").startsWith("#") ? idOrHash : `#${idOrHash}`;
         if (!setActiveNavById._last) setActiveNavById._last = "";
         if (hash === setActiveNavById._last) return;
         const links = nav.querySelectorAll("a.tree-item");
         links.forEach(a => a.setAttribute("aria-current", "false"));
-        const active = nav.querySelector(`a.tree-item[href="${CSS.escape(hash)}"]`);
+        const safeHash = String(hash).replace(/"/g, '\\"');
+        const active = nav.querySelector(`a.tree-item[href="${safeHash}"]`);
         if (!active) return;
         active.setAttribute("aria-current", "true");
         const group = active.closest("details.tree");
@@ -2145,6 +2471,7 @@
       }
 
       function filterNav(query){
+        if (!nav || !navEmpty) return;
         const q = normalize(query);
         searchActive = !!q;
         let any = false;
@@ -2171,41 +2498,64 @@
         navEmpty.style.display = any ? "none" : "block";
       }
 
-      searchInput.addEventListener("input", (e) => {
-        const q = e.target.value || "";
-        filterNav(q);
-        highlightInCards(q.trim());
-      });
+      if (searchInput){
+        searchInput.addEventListener("input", (e) => {
+          const q = e.target.value || "";
+          filterNav(q);
+          highlightInCards(q.trim());
+        });
+      }
 
       function openFirstVisibleLink(){
         const first = Array.from(nav.querySelectorAll("a.tree-item")).find(a => a.style.display !== "none");
         if (first){
           const href = first.getAttribute("href");
           if (href){
+            openModuleForHash(href, false);
             window.location.hash = href;
             setTimeout(() => {
-              document.querySelector(href)?.scrollIntoView({ behavior: "smooth", block: "start" });
+              const el = document.querySelector(href);
+              if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
             }, 0);
           }
         }
       }
 
-      nav.addEventListener("click", (e) => {
-        const a = e.target.closest("a.tree-item");
-        if (!a) return;
-        hasInteracted = true;
-        autoCollapse = true;
-        closeSidebar();
-        setTimeout(setActiveNavByHash, 0);
-      });
+      if (nav){
+        nav.addEventListener("click", (e) => {
+          const a = e.target && e.target.closest ? e.target.closest("a.tree-item") : null;
+          if (!a) return;
+          e.preventDefault();
+          hasInteracted = true;
+          autoCollapse = true;
+          const href = a.getAttribute("href");
+          if (href){
+            suppressSpyUntil = Date.now() + 700;
+            pinNav(href, 1500);
+            openModuleForHash(href, true);
+            setActiveNavById(href);
+            window.location.hash = href;
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                const el = document.querySelector(href);
+                if (el) el.scrollIntoView({ behavior: "auto", block: "start" });
+              });
+            });
+          }
+          const isMobile = window.matchMedia && window.matchMedia("(max-width: 980px)").matches;
+          if (isMobile) closeSidebar();
+        });
+      }
 
       window.addEventListener("hashchange", () => {
         hasInteracted = true;
         autoCollapse = true;
-        setActiveNavByHash();
+        if (nav) setActiveNavByHash();
       });
-      Array.from(nav.querySelectorAll("details.tree")).forEach(g => (g.open = false));
-      setActiveNavByHash();
+      if (nav){
+        Array.from(nav.querySelectorAll("details.tree")).forEach(g => (g.open = false));
+        setActiveNavByHash();
+      }
 
       const cardsForSpy = Array.from(document.querySelectorAll(".card[id]"));
       if (cardsForSpy.length){
@@ -2219,17 +2569,35 @@
         }
         function updateScrollSpy(){
           spyTicking = false;
+          if (Date.now() < suppressSpyUntil) return;
+          if (navPinHash && Date.now() < navPinUntil){
+            setActiveNavById(navPinHash);
+            return;
+          }
           const offset = topOffset();
-          let current = cardsForSpy[0].id;
-          for (const card of cardsForSpy){
+          const visibleCards = cardsForSpy.filter(c => {
+            if (c.offsetParent === null) return false;
+            const m = c.closest(".module");
+            if (!m || !m.classList.contains("open")) return false;
+            const r = c.getBoundingClientRect();
+            return r.height > 0 && r.width > 0;
+          });
+          if (!visibleCards.length) return;
+          const focusY = offset + Math.min(180, window.innerHeight * 0.28);
+          let bestId = visibleCards[0].id;
+          let bestDist = Number.POSITIVE_INFINITY;
+          for (const card of visibleCards){
             const rect = card.getBoundingClientRect();
-            if (rect.top - offset <= 0){
-              current = card.id;
-            }else{
-              break;
+            if (rect.bottom < offset - 80) continue;
+            if (rect.top > window.innerHeight + 80) continue;
+            const center = (rect.top + rect.bottom) / 2;
+            const dist = Math.abs(center - focusY);
+            if (dist < bestDist){
+              bestDist = dist;
+              bestId = card.id;
             }
           }
-          if (current) setActiveNavById(current);
+          if (bestId) setActiveNavById(bestId);
         }
         function requestSpy(){
           if (spyTicking) return;
@@ -2244,26 +2612,34 @@
         window.addEventListener("resize", requestSpy);
       }
 
-      expandAllBtn.addEventListener("click", () => {
-        hasInteracted = true;
-        autoCollapse = false;
-        searchInput.value = "";
-        filterNav("");
-        clearHighlights();
-        const groups = Array.from(nav.querySelectorAll("details.tree"));
-        groups.forEach(g => (g.open = true));
-        openFirstVisibleLink();
-      });
+      if (expandAllBtn){
+        expandAllBtn.addEventListener("click", () => {
+          hasInteracted = true;
+          autoCollapse = false;
+          if (searchInput) searchInput.value = "";
+          filterNav("");
+          clearHighlights();
+          if (nav){
+            const groups = Array.from(nav.querySelectorAll("details.tree"));
+            groups.forEach(g => (g.open = true));
+          }
+          openFirstVisibleLink();
+        });
+      }
 
-      collapseAllBtn.addEventListener("click", () => {
-        hasInteracted = true;
-        autoCollapse = false;
-        searchInput.value = "";
-        filterNav("");
-        clearHighlights();
-        const groups = Array.from(nav.querySelectorAll("details.tree"));
-        groups.forEach(g => (g.open = false));
-      });
+      if (collapseAllBtn){
+        collapseAllBtn.addEventListener("click", () => {
+          hasInteracted = true;
+          autoCollapse = false;
+          if (searchInput) searchInput.value = "";
+          filterNav("");
+          clearHighlights();
+          if (nav){
+            const groups = Array.from(nav.querySelectorAll("details.tree"));
+            groups.forEach(g => (g.open = false));
+          }
+        });
+      }
 
       const lastUpdated = document.getElementById("lastUpdated");
       if (lastUpdated && !lastUpdated.textContent.trim()){
@@ -2272,6 +2648,19 @@
         const m = String(d.getMonth() + 1).padStart(2, "0");
         const day = String(d.getDate()).padStart(2, "0");
         lastUpdated.textContent = `${y}-${m}-${day}`;
+      }
+      document.documentElement.classList.add("js-ready");
+      }catch(e){
+        document.documentElement.classList.remove("js-ready");
+        const jsStatus = document.getElementById("jsStatus");
+        if (jsStatus){
+          jsStatus.style.display = "block";
+          const msg = (e && (e.message || e.stack)) ? String(e.message || e.stack) : String(e);
+          const cn = jsStatus.querySelector(".cn");
+          const en = jsStatus.querySelector(".en");
+          if (cn) cn.textContent = `脚本初始化失败：${msg}`;
+          if (en) en.textContent = `Script init failed: ${msg}`;
+        }
       }
     </script>
   </body>
